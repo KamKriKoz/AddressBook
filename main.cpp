@@ -72,11 +72,11 @@ string wczytajLinie() {
 void dodanieKontaktu(vector <Adresat> &kontakty) {
 
     Adresat osoba;
-    int ostatniId = kontakty.back().id;
 
+    if (kontakty.empty()) osoba.id = 1;
+    else osoba.id = kontakty.back().id + 1;
+    
     system("cls");
-
-    osoba.id = ostatniId + 1;
 
     cout << "Podaj imie: " ;
     osoba.imie = wczytajLinie();
