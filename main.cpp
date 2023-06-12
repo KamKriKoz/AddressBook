@@ -1,421 +1,723 @@
 #include <iostream>
 #include <fstream>
 #include <sstream>
-#include <cstdlib>
-#include <vector>
+#include <windows.h>
 #include <conio.h>
+#include <vector>
 
 using namespace std;
 
-struct Adresat {
+struct User {
 
-    int id;
-    string imie, nazwisko, nrTelefonu, email, adres;
+    int userId;
+    string username, password;
 };
 
-void wczytajZPliku(vector <Adresat> &kontakty) {
+struct Contact {
 
-    Adresat osoba;
-    string linia, pole;
+    int contactId;
+    string name, lastName, telNumber, email, address;
+};
 
-    fstream plik;
-    plik.open("Kontakty.txt", ios::in);
+void readUsersFromFile(vector <User> &users) {
 
-    if (plik.good() == false) {
-        plik.open("Kontakty.txt", ios::out);
-        cout << "Utworzono plik kontaktow." << endl;
-        system("pause");
+    User person;
+    string line, field;
+
+    fstream file;
+    file.open("Users.txt", ios::in);
+
+    if (file.good() == false) {
+        file.open("Users.txt", ios::out);
+        cout << "File of users has been created." << endl;
+        Sleep(2000);
     }
 
-    while (getline(plik, linia)) {
+    while (getline(file, line)) {
 
-        istringstream iss(linia);
+        istringstream iss(line);
 
-        getline(iss, pole, '|');
-        osoba.id = stoi(pole);
+        getline(iss, field, '|');
+        person.userId = stoi(field);
 
-        getline(iss, osoba.imie, '|');
-        getline(iss, osoba.nazwisko, '|');
-        getline(iss, osoba.nrTelefonu, '|');
-        getline(iss, osoba.email, '|');
-        getline(iss, osoba.adres, '|');
+        getline(iss, person.username, '|');
+        getline(iss, person.password, '|');
 
-        kontakty.push_back(osoba);
+        users.push_back(person);
     }
 
-    plik.close();
+    file.close();
 }
 
-void dodajDoPliku(const Adresat &osoba) {
+void addToUsersFile(const User &person) {
 
-    fstream plik;
-    plik.open("Kontakty.txt", ios::out | ios::app);
+    fstream file;
+    file.open("Users.txt", ios::out | ios::app);
 
-    plik << osoba.id << "|";
-    plik << osoba.imie << "|";
-    plik << osoba.nazwisko << "|";
-    plik << osoba.nrTelefonu << "|";
-    plik << osoba.email << "|";
-    plik << osoba.adres << "|" << endl;
+    file << person.userId << "|";
+    file << person.username << "|";
+    file << person.password << "|" << endl;
 
-    plik.close();
+    file.close();
 }
 
-string wczytajLinie() {
+void overwriteUsersFile (vector <User> users) {
 
-    string wejscie = "";
+    ofstream file;
+    file.open("Users.txt");
+
+    for (size_t i = 0; i < users.size(); i++) {
+
+        file << users[i].userId << "|";
+        file << users[i].username << "|";
+        file << users[i].password << "|" << endl;
+    }
+
+    file.close();
+}
+
+string loadLine() {
+
+    string input = "";
     cin.sync();
-    getline(cin, wejscie);
-    return wejscie;
+    getline(cin, input);
+    return input;
 }
 
-void dodanieKontaktu(vector <Adresat> &kontakty) {
-
-    Adresat osoba;
-
-    if (kontakty.empty()) osoba.id = 1;
-    else osoba.id = kontakty.back().id + 1;
-    
-    system("cls");
-
-    cout << "Podaj imie: " ;
-    osoba.imie = wczytajLinie();
-
-    cout << "Podaj nazwisko: ";
-    osoba.nazwisko = wczytajLinie();
-
-    cout << "Podaj nr telefonu: ";
-    osoba.nrTelefonu = wczytajLinie();
-
-    cout << "Podaj email: ";
-    osoba.email = wczytajLinie();
-
-    cout << "Podaj adres: ";
-    osoba.adres = wczytajLinie();
-
-    kontakty.push_back(osoba);
-    dodajDoPliku(osoba);
-
-    cout << "Utworzono nowy kontakt." << endl;
-    system("pause");
-}
-
-void wyswietlWybrane(const Adresat &osoba) {
-
-    cout << "ID: \t\t\t" << osoba.id << endl;
-    cout << "Imie: \t\t\t" << osoba.imie << endl;
-    cout << "Nazwisko: \t\t" << osoba.nazwisko << endl;
-    cout << "Numer telefonu: \t" << osoba.nrTelefonu << endl;
-    cout << "Email: \t\t\t" << osoba.email << endl;
-    cout << "Adres: \t\t\t" << osoba.adres << endl << endl;
-}
-
-void wyswietlPoImieniu(vector <Adresat> kontakty) {
-
-    Adresat osoba;
-    system("cls");
-
-    if (kontakty.empty()) {
-        cout << "Brak danych w ksiazce adresowej" << endl;
-        system("pause");
-        return;
-    }
-
-    cout << "Podaj imie: ";
-    string imie = wczytajLinie();
-    cout << endl;
-
-    bool flaga = true;
-
-    for (Adresat osoba : kontakty) {
-        if (osoba.imie == imie) {
-            wyswietlWybrane(osoba);
-            flaga = false;
-        }
-    }
-
-    if (flaga)
-        cout << "Brak kontaktu o podanym imieniu." << endl << endl;
-
-    system("pause");
-}
-
-void wyswietlPoNazwisku(vector <Adresat> kontakty) {
-
-    Adresat osoba;
-    system("cls");
-
-    if (kontakty.empty()) {
-        cout << "Brak danych w ksiazce adresowej" << endl;
-        system("pause");
-        return;
-    }
-    cout << "Podaj nazwisko: ";
-    string nazwisko = wczytajLinie();
-    cout << endl;
-
-    bool flaga = true;
-
-    for (Adresat osoba : kontakty) {
-        if (osoba.nazwisko == nazwisko) {
-            wyswietlWybrane(osoba);
-            flaga = false;
-        }
-    }
-
-    if (flaga)
-        cout << "Brak kontaktu o podanym nazwisku." << endl << endl;
-
-    system("pause");
-}
-
-void wyswietlKontakty(vector <Adresat> kontakty) {
+void registration(vector <User> &users) {
 
     system("cls");
+    User person;
+    string username;
 
-    if (kontakty.empty()) {
-        cout << "Brak danych w ksiazce adresowej" << endl;
-        system("pause");
-        return;
-    }
+    cout << "Enter your username: ";
+    username = loadLine();
 
-    cout << "\t---ZAPISANE KONTAKTY---" << endl << endl;
-
-    for (Adresat osoba : kontakty) {
-
-        cout << "ID: \t\t\t" << osoba.id << endl;
-        cout << "Imie: \t\t\t" << osoba.imie << endl;
-        cout << "Nazwisko: \t\t" << osoba.nazwisko << endl;
-        cout << "Numer telefonu: \t" << osoba.nrTelefonu << endl;
-        cout << "Email: \t\t\t" << osoba.email << endl;
-        cout << "Adres: \t\t\t" << osoba.adres << endl << endl;
-    }
-
-    system("pause");
-}
-
-void nadpiszPlik (vector <Adresat> kontakty) {
-
-    ofstream plik;
-    plik.open("Kontakty.txt");
-
-    for ( size_t i = 0; i < kontakty.size(); i++) {
-
-        plik << kontakty[i].id << "|";
-        plik << kontakty[i].imie << "|";
-        plik << kontakty[i].nazwisko << "|";
-        plik << kontakty[i].nrTelefonu << "|";
-        plik << kontakty[i].email << "|";
-        plik << kontakty[i].adres << "|" << endl;
-    }
-
-    plik.close();
-}
-
-void usunKontakt(vector <Adresat> &kontakty) {
-
-    Adresat osoba;
-    int idDoUsuniecia;
-    bool flaga = true;
-    char wybor;
-
-    system("cls");
-
-    if (kontakty.empty()) {
-        cout << "Brak danych w ksiazce adresowej" << endl;
-        system("pause");
-        return;
-    }
-
-    cout << "Podaj id adresata do usuniecia: ";
-    cin >> idDoUsuniecia;
-
-    for (vector <Adresat> :: iterator itr = kontakty.begin(); itr != kontakty.end(); itr++) {
-
-        osoba = *itr;
-        if (osoba.id == idDoUsuniecia) {
-
-            flaga = false;
-            cout << "Nacisnij t, w celu potwierdzenia usuniecia lub dowolny inny klawisz by anulowac." << endl;
-            wybor = getch();
-
-            switch (wybor) {
-
-            case 't':
-                kontakty.erase(itr);
-                nadpiszPlik(kontakty);
-                cout << "Usunieto kontakt" << endl;
-                system("pause");
-                break;
-
-            default:
-                cout << "Anulowano usuniecie" << endl;
-                system("pause");
-            }
-        }
-    }
-
-    if (flaga) {
-
-        cout << "Brak kontaktu o podanym id." << endl;
-        system("pause");
-    }
-}
-
-void menuKsiazki () {
-
-    cout << "1. Dodaj adresata." << endl;
-    cout << "2. Wyszukaj po imieniu." << endl;
-    cout << "3. Wyszukaj po nazwisku." << endl;
-    cout << "4. Wyswietl zapisane kontakty." << endl;
-    cout << "5. Usun adresata." << endl;
-    cout << "6. Edytuj adresata." << endl;
-    cout << "9. Zakoncz program." << endl;
-}
-
-void menuEdycji () {
-
-    cout << "Wybierz dana do edycji." << endl;
-    cout << "1. Imie." << endl;
-    cout << "2. Nazwisko." << endl;
-    cout << "3. Numer telefonu." << endl;
-    cout << "4. Email." << endl;
-    cout << "5. Adres." << endl;
-    cout << "6. Powrot do menu." << endl;
-}
-
-void edycjaKontaktu (vector <Adresat> &kontakty) {
-
-    system("cls");
-    bool flaga = false;
-    int id, indeks;
-    char wybor;
-
-    if (kontakty.empty()) {
-        cout << "Brak danych w ksiazce adresowej" << endl;
-        system("pause");
-        return;
-    }
-
-    cout << "Podaj id adresata: ";
-    cin >> id;
-
-    system("cls");
-
-    for (size_t i = 0; i < kontakty.size(); i++) {
-
-        if (kontakty[i].id == id) {
-
-            indeks = i;
-            flaga = true;
-            break;
-        }
-    }
-
-    if (flaga) {
-
-        while(1) {
-
+    for (User person : users) {
+        if (person.username == username) {
             system("cls");
-            menuEdycji();
+            cout << "User exist. Enter another username: ";
+            username = loadLine();
+        }
+    }
 
-            wybor = getch();
+    person.username = username;
+    cout << "Enter your password: ";
+    person.password = loadLine();
 
-            switch(wybor) {
+    if (users.empty()) person.userId = 1;
+    else person.userId = users.back().userId + 1;
 
-            case '1':
-                cout << "Podaj nowe imie: ";
-                kontakty[indeks].imie = wczytajLinie();
-                nadpiszPlik(kontakty);
-                cout << "Nadpisano nowe imie." << endl;
-                system("pause");
-                break;
+    users.push_back(person);
+    addToUsersFile(person);
 
-            case '2':
-                cout << "Podaj nowe nazwisko: ";
-                kontakty[indeks].nazwisko = wczytajLinie();
-                nadpiszPlik(kontakty);
-                cout << "Nadpisano nowe nazwisko." << endl;
-                break;
+    cout << "Account created";
+    Sleep(1500);
+}
 
-            case '3':
-                cout << "Podaj nowy numer telefonu: ";
-                kontakty[indeks].nrTelefonu = wczytajLinie();
-                nadpiszPlik(kontakty);
-                cout << "Nadpisano nowy numer telefonu." << endl;
-                system("pause");
-                break;
+int logging(vector <User> users) {
 
-            case '4':
-                cout << "Podaj nowy email: ";
-                kontakty[indeks].email = wczytajLinie();
-                nadpiszPlik(kontakty);
-                cout << "Nadpisano nowy email." << endl;
-                system("pause");
-                break;
+    system("cls");
+    bool flag = true;
+    string login, password;
 
-            case '5':
-                cout << "Podaj nowy adres: ";
-                kontakty[indeks].adres = wczytajLinie();
-                nadpiszPlik(kontakty);
-                cout << "Nadpisano nowy adres." << endl;
-                system("pause");
-                break;
+    cout << "Enter your username: ";
+    login = loadLine();
 
-            case '6':
-                return;
+    for (User person : users) {
+        if (person.username == login) {
+
+            for (int j = 0; j < 3; j++) {
+                cout << "Enter your password, " << 3 - j << " attempts left: ";
+                password = loadLine();
+
+                if (person.password == password) {
+                    cout << "Logged" << endl;
+                    flag = false;
+                    Sleep(1500);
+                    return person.userId;
+                }
+            }
+            cout << "3 times wrong password. Wait 5 seconds for another try.";
+            Sleep(5000);
+            return 0;
+        }
+    }
+    if (flag) {
+        cout << "Username doesn't exist." << endl;
+        Sleep(1500);
+    }
+
+    return 0;
+}
+
+void passwordChange(vector<User> &users, int userId) {
+
+    system("cls");
+    string password;
+
+    cout << "Enter new password: ";
+    password = loadLine();
+
+    for (size_t i = 0; i < users.size(); i++) {
+        if(users[i].userId == userId) {
+            users[i].password = password;
+            overwriteUsersFile(users);
+            cout << "Password changed.";
+            Sleep(1500);
+        }
+    }
+}
+
+void addToContactsFile(const Contact &person, const User &user) {
+
+    fstream file;
+    file.open("Contacts.txt", ios::out | ios::app);
+
+    file << user.userId << "|";
+    file << person.contactId << "|";
+    file << person.name << "|";
+    file << person.lastName << "|";
+    file << person.telNumber << "|";
+    file << person.email << "|";
+    file << person.address << "|" << endl;
+
+    file.close();
+}
+
+vector <Contact> readAllContactsFromFile() {
+
+    vector <Contact> contacts;
+    Contact person;
+    string line, field;
+
+    fstream file;
+    file.open("Contacts.txt", ios::in);
+
+    if (file.good() == false) {
+        file.open("Contacts.txt", ios::out);
+        cout << "File of contacts has been created." << endl;
+        Sleep(2000);
+    }
+
+    while (getline(file, line)) {
+
+        istringstream iss(line);
+
+        getline(iss, field, '|');
+        getline(iss, field, '|');
+        person.contactId = stoi(field);
+
+        getline(iss, person.name, '|');
+        getline(iss, person.lastName, '|');
+        getline(iss, person.telNumber, '|');
+        getline(iss, person.email, '|');
+        getline(iss, person.address, '|');
+
+        contacts.push_back(person);
+    }
+
+    file.close();
+
+    return contacts;
+}
+
+vector <Contact> readContactsByUser(const User &user) {
+
+    vector <Contact> userContacts;
+    Contact person;
+    User userToCheck;
+    string line, field;
+
+    fstream file;
+    file.open("Contacts.txt", ios::in);
+
+    while (getline(file, line)) {
+
+        istringstream iss(line);
+
+        getline(iss, field, '|');
+        userToCheck.userId = stoi(field);
+
+        if (user.userId == userToCheck.userId) {
+
+            getline(iss, field, '|');
+            person.contactId = stoi(field);
+
+            getline(iss, person.name, '|');
+            getline(iss, person.lastName, '|');
+            getline(iss, person.telNumber, '|');
+            getline(iss, person.email, '|');
+            getline(iss, person.address, '|');
+
+            userContacts.push_back(person);
+        }
+    }
+    file.close();
+
+    return userContacts;
+}
+
+void showSelected(const Contact &person) {
+
+    cout << "ID number: \t\t" << person.contactId << endl;
+    cout << "Name: \t\t\t" << person.name << endl;
+    cout << "Last name: \t\t" << person.lastName << endl;
+    cout << "Telephone number: \t" << person.telNumber << endl;
+    cout << "Email: \t\t\t" << person.email << endl;
+    cout << "Address: \t\t" << person.address << endl << endl;
+}
+
+void addContact(const User &user) {
+
+    vector <Contact> allContacts;
+    vector <Contact> userContacts;
+    system("cls");
+
+    allContacts = readAllContactsFromFile();
+    userContacts = readContactsByUser(user);
+
+    system("cls");
+    Contact person;
+
+    if (allContacts.empty()) person.contactId = 1;
+    else person.contactId = allContacts.back().contactId + 1;
+
+    cout << "Enter name: " ;
+    person.name = loadLine();
+
+    cout << "Enter last name: ";
+    person.lastName = loadLine();
+
+    cout << "Enter telephone number: ";
+    person.telNumber = loadLine();
+
+    cout << "Enter email: ";
+    person.email = loadLine();
+
+    cout << "Enter adaress: ";
+    person.address = loadLine();
+
+    userContacts.push_back(person);
+    addToContactsFile(person, user);
+
+    cout << "New contact created." << endl;
+    Sleep(1500);
+}
+
+void searchByName(const User &user) {
+
+    system("cls");
+    vector <Contact> contacts;
+    bool flag = true;
+
+    contacts = readContactsByUser(user);
+
+    if (contacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        Sleep (1500);
+        return;
+    }
+
+    cout << "Enter name: ";
+    string name = loadLine();
+    cout << endl;
+
+    for (Contact person : contacts) {
+        if (person.name == name) {
+            showSelected(person);
+            flag = false;
+        }
+    }
+
+    if (flag)
+        cout << "There is no contact for the given name." << endl;
+
+    system("pause");
+}
+
+void searchByLastName(const User &user) {
+
+    system("cls");
+    vector <Contact> contacts;
+    bool flag = true;
+
+    contacts = readContactsByUser(user);
+
+    if (contacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        Sleep (1500);
+        return;
+    }
+
+    cout << "Enter last name: ";
+    string lastName = loadLine();
+    cout << endl;
+
+    for (Contact person : contacts) {
+        if (person.lastName == lastName) {
+            showSelected(person);
+            flag = false;
+        }
+    }
+
+    if (flag)
+        cout << "There is no contact for the given name." << endl;
+
+    system("pause");
+}
+
+void showSavedContacts(const User &user) {
+
+    system("cls");
+    vector <Contact> contacts;
+
+    contacts = readContactsByUser(user);
+
+    if (contacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        Sleep (1500);
+        return;
+    }
+
+    for (Contact person : contacts) showSelected(person);
+
+    system("pause");
+}
+
+void deleteContact(const User &user) {
+
+    system("cls");
+
+    vector <string> temporaryVector;
+    vector <Contact> allContacts;
+    vector <Contact> userContacts;
+    string line, toDelete;
+    bool flag = false;
+    int contactId;
+    char choose;
+
+    userContacts = readContactsByUser(user);
+    allContacts = readAllContactsFromFile();
+
+    if (userContacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        Sleep (1500);
+        return;
+    }
+
+    cout << "Enter contact id: ";
+    cin >> contactId;
+
+    for (Contact person : userContacts)
+        if (person.contactId == contactId) flag = true;
+
+    if (flag) {
+
+        for (size_t i = 0; i < allContacts.size(); i++) {
+
+            if (allContacts[i].contactId == contactId) {
+
+                fstream file;
+                file.open("Contacts.txt", ios::in);
+                while (getline(file, line)) temporaryVector.push_back(line);
+                file.close();
+
+                toDelete = temporaryVector[i];
+
+                cout << "Press t, to confirm deletion or any other button to reject." << endl;
+                choose = getch();
+
+                if (choose == 't') {
+
+                    fstream file;
+                    file.open("Contacts.txt", ios::in);
+
+                    fstream file2;
+                    file2.open("temporaryContacts.txt", ios::out | ios::app);
+
+                    while (getline(file, line)) {
+                        if (line == toDelete) continue;
+                        file2 << line << endl;
+                    }
+
+                    file.close();
+                    file2.close();
+
+                    remove("Contacts.txt");
+                    rename("temporaryContacts.txt", "Contacts.txt");
+
+                    cout << "Contact has been deleted.";
+                    Sleep(1500);
+                    return;
+                }
+
+                else {
+                    cout << "Deletion cancelled.";
+                    Sleep(1500);
+                    return;
+                }
             }
         }
     }
 
-    else {
+    if (!flag) cout << "There is no contact for the given id number." << endl;
 
-        cout << "Brak kontaktu o podanym id." << endl;
-        system("pause");
+    Sleep(1500);
+}
+
+void editMenu() {
+
+    cout << "Select data to edit." << endl;
+    cout << "1. Name." << endl;
+    cout << "2. Last name." << endl;
+    cout << "3. Telephone number." << endl;
+    cout << "4. Email." << endl;
+    cout << "5. Address." << endl;
+    cout << "6. Return to user menu." << endl;
+}
+
+void rewritingEdited(const Contact &person, const User &user, string toEdit) {
+
+    string line;
+    fstream file;
+    file.open("Contacts.txt", ios::in);
+
+    fstream file2;
+    file2.open("temporaryContacts.txt", ios::out | ios::app);
+
+    while (getline(file, line)) {
+        if (line == toEdit) {
+
+            file2 << user.userId << "|";
+            file2 << person.contactId << "|";
+            file2 << person.name << "|";
+            file2 << person.lastName << "|";
+            file2 << person.telNumber << "|";
+            file2 << person.email << "|";
+            file2 << person.address << "|" << endl;
+
+            continue;
+        }
+
+        file2 << line << endl;
     }
+
+    file.close();
+    file2.close();
+
+    remove("Contacts.txt");
+    rename("temporaryContacts.txt", "Contacts.txt");
+}
+
+void editContact(const User &user) {
+
+    system("cls");
+
+    vector <string> temporaryVector;
+    vector <Contact> allContacts;
+    vector <Contact> userContacts;
+    Contact person;
+    string line, toEdit;
+    bool flag = false;
+    int contactId;
+    char choose;
+
+    allContacts = readAllContactsFromFile();
+    userContacts = readContactsByUser(user);
+
+    if (userContacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        Sleep (1500);
+        return;
+    }
+
+    cout << "Enter contact id: ";
+    cin >> contactId;
+
+    for (Contact person : userContacts)
+        if (person.contactId == contactId) flag = true;
+
+    if (flag) {
+
+        for (size_t i = 0; i < allContacts.size(); i++) {
+
+            if (allContacts[i].contactId == contactId) {
+
+                system("cls");
+                editMenu();
+
+                fstream file;
+                file.open("Contacts.txt", ios::in);
+                while (getline(file, line)) temporaryVector.push_back(line);
+                file.close();
+
+                toEdit = temporaryVector[i];
+                person = allContacts[i];
+                choose = getch();
+
+                switch(choose) {
+
+                case '1':
+
+                    system("cls");
+                    cout << "Write new name: ";
+                    person.name = loadLine();
+                    rewritingEdited(person, user, toEdit);
+                    cout << "The contact has been changed";
+                    Sleep(1500);
+                    break;
+
+                case '2':
+
+                    system("cls");
+                    cout << "Write new last name: ";
+                    person.lastName = loadLine();
+                    rewritingEdited(person, user, toEdit);
+                    cout << "The contact has been changed";
+                    Sleep(1500);
+                    break;
+
+                case '3':
+
+                    system("cls");
+                    cout << "Write new telephone number: ";
+                    person.telNumber = loadLine();
+                    rewritingEdited(person, user, toEdit);
+                    cout << "The contact has been changed";
+                    Sleep(1500);
+                    break;
+
+                case '4':
+
+                    system("cls");
+                    cout << "Write new email: ";
+                    person.email = loadLine();
+                    rewritingEdited(person, user, toEdit);
+                    cout << "The contact has been changed";
+                    Sleep(1500);
+                    break;
+
+                case '5':
+
+                    system("cls");
+                    cout << "Write new address: ";
+                    person.address = loadLine();
+                    rewritingEdited(person, user, toEdit);
+                    cout << "The contact has been changed";
+                    Sleep(1500);
+                    break;
+
+                case '6':
+                    return;
+                }
+            }
+        }
+    }
+
+    if (!flag) cout << "There is no contact for the given id number." << endl;
+
+    Sleep(1500);
+}
+
+void loginMenu() {
+
+    cout << "1. Registration" << endl;
+    cout << "2. Logging in" << endl;
+    cout << "9. End program" << endl;
+}
+
+void userMenu() {
+
+    cout << "1. Add contact." << endl;
+    cout << "2. Search by name." << endl;
+    cout << "3. Search by last name." << endl;
+    cout << "4. Show saved contacts." << endl;
+    cout << "5. Delete contact." << endl;
+    cout << "6. Edit contact." << endl;
+    cout << "7. Change password" << endl;
+    cout << "8. Log out" << endl;
 }
 
 int main() {
 
-    vector <Adresat> kontakty;
-    char wybor;
-    wczytajZPliku(kontakty);
+    vector <User> users;
+    char choose;
+    User user;
+
+    readUsersFromFile(users);
+    int idLogUser = 0;
 
     while(1) {
 
-        system("cls");
-        menuKsiazki();
+        if (idLogUser == 0) {
 
-        wybor = getch();
+            system("cls");
+            loginMenu();
+            choose = getch();
 
-        switch(wybor) {
+            switch(choose) {
 
-        case '1':
-            dodanieKontaktu(kontakty);
-            break;
+            case '1':
+                registration(users);
+                break;
 
-        case '2':
-            wyswietlPoImieniu(kontakty);
-            break;
+            case '2':
+                if (users.empty()) {
+                    cout << "There is no user yet";
+                    Sleep(1500);
+                } else idLogUser = logging(users);
+                break;
 
-        case '3':
-            wyswietlPoNazwisku(kontakty);
-            break;
+            case '9':
+                exit(0);
+            }
 
-        case '4':
-            wyswietlKontakty(kontakty);
-            break;
+        } else {
 
-        case '5':
-            usunKontakt(kontakty);
-            break;
+            system("cls");
+            userMenu();
 
-        case '6':
-            edycjaKontaktu(kontakty);
-            break;
+            for (vector <User> :: iterator itr = users.begin(); itr != users.end(); itr++) {
+                user = *itr;
+                if (user.userId == idLogUser) break;
+            }
 
-        case '9':
-            exit(0);
+            choose = getch();
+
+            switch(choose) {
+
+            case '1':
+                addContact(user);
+                break;
+
+            case '2':
+                searchByName(user);
+                break;
+
+            case '3':
+                searchByLastName(user);
+                break;
+
+            case '4':
+                showSavedContacts(user);
+                break;
+
+            case '5':
+                deleteContact(user);
+                break;
+
+            case '6':
+                editContact(user);
+                break;
+
+            case '7':
+                passwordChange(users, idLogUser);
+                break;
+
+            case '8':
+                idLogUser = 0;
+            }
         }
     }
 
