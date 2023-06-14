@@ -15,11 +15,53 @@ struct User {
 
 struct Contact {
 
-    int contactId;
+    int userId, contactId;
     string name, lastName, telNumber, email, address;
 };
 
-void readUsersFromFile(vector <User> &users) {
+string loadLine() {
+
+    string input = "";
+    cin.sync();
+    getline(cin, input);
+    return input;
+}
+
+//Menu
+
+void loginMenu() {
+
+    cout << "1. Registration" << endl;
+    cout << "2. Logging in" << endl;
+    cout << "9. End program" << endl;
+}
+
+void userMenu() {
+
+    cout << "1. Add contact." << endl;
+    cout << "2. Search by name." << endl;
+    cout << "3. Search by last name." << endl;
+    cout << "4. Show saved contacts." << endl;
+    cout << "5. Delete contact." << endl;
+    cout << "6. Edit contact." << endl;
+    cout << "7. Change password" << endl;
+    cout << "8. Log out" << endl;
+}
+
+void editMenu() {
+
+    cout << "Select data to edit." << endl;
+    cout << "1. Name." << endl;
+    cout << "2. Last name." << endl;
+    cout << "3. Telephone number." << endl;
+    cout << "4. Email." << endl;
+    cout << "5. Address." << endl;
+    cout << "6. Return to user menu." << endl;
+}
+
+//Users
+
+void readUsersFromFile (vector <User> &users) {
 
     User person;
     string line, field;
@@ -49,7 +91,7 @@ void readUsersFromFile(vector <User> &users) {
     file.close();
 }
 
-void addToUsersFile(const User &person) {
+void addToUsersFile (const User &person) {
 
     fstream file;
     file.open("Users.txt", ios::out | ios::app);
@@ -76,15 +118,7 @@ void overwriteUsersFile (vector <User> users) {
     file.close();
 }
 
-string loadLine() {
-
-    string input = "";
-    cin.sync();
-    getline(cin, input);
-    return input;
-}
-
-void registration(vector <User> &users) {
+void registration (vector <User> &users) {
 
     system("cls");
     User person;
@@ -115,7 +149,7 @@ void registration(vector <User> &users) {
     Sleep(1500);
 }
 
-int logging(vector <User> users) {
+int logging (vector <User> users) {
 
     system("cls");
     bool flag = true;
@@ -151,7 +185,7 @@ int logging(vector <User> users) {
     return 0;
 }
 
-void passwordChange(vector<User> &users, int userId) {
+void passwordChange (vector <User> &users, int userId) {
 
     system("cls");
     string password;
@@ -169,35 +203,49 @@ void passwordChange(vector<User> &users, int userId) {
     }
 }
 
-void addToContactsFile(const Contact &person, const User &user) {
+//Contacts
 
-    fstream file;
-    file.open("Contacts.txt", ios::out | ios::app);
+void pasteContactToFile (ofstream &file, const Contact &person) {
 
-    file << user.userId << "|";
+    file << person.userId << "|";
     file << person.contactId << "|";
     file << person.name << "|";
     file << person.lastName << "|";
     file << person.telNumber << "|";
     file << person.email << "|";
     file << person.address << "|" << endl;
+}
+
+void addToContactsFile (const Contact &person) {
+
+    ofstream file ("Contacts.txt", ios::app);
+
+    if (!file.is_open()) {
+        cout << "Cannot open file" << endl;
+        return;
+    }
+
+    pasteContactToFile(file, person);
 
     file.close();
 }
 
-vector <Contact> readAllContactsFromFile() {
+int readContactsFromFile (vector <Contact> &userContacts, int idLoggedUser) {
 
-    vector <Contact> contacts;
+    int lastContactId;
+    string fileName = "Contacts.txt";
     Contact person;
     string line, field;
 
     fstream file;
-    file.open("Contacts.txt", ios::in);
+    file.open(fileName, ios::in);
 
-    if (file.good() == false) {
-        file.open("Contacts.txt", ios::out);
+    if (!file.good()) {
+        file.open(fileName, ios::out);
+        file.close();
         cout << "File of contacts has been created." << endl;
         Sleep(2000);
+        return 0;
     }
 
     while (getline(file, line)) {
@@ -205,45 +253,13 @@ vector <Contact> readAllContactsFromFile() {
         istringstream iss(line);
 
         getline(iss, field, '|');
+        person.userId = stoi(field);
+
         getline(iss, field, '|');
         person.contactId = stoi(field);
+        lastContactId = person.contactId;
 
-        getline(iss, person.name, '|');
-        getline(iss, person.lastName, '|');
-        getline(iss, person.telNumber, '|');
-        getline(iss, person.email, '|');
-        getline(iss, person.address, '|');
-
-        contacts.push_back(person);
-    }
-
-    file.close();
-
-    return contacts;
-}
-
-vector <Contact> readContactsByUser(const User &user) {
-
-    vector <Contact> userContacts;
-    Contact person;
-    User userToCheck;
-    string line, field;
-
-    fstream file;
-    file.open("Contacts.txt", ios::in);
-
-    while (getline(file, line)) {
-
-        istringstream iss(line);
-
-        getline(iss, field, '|');
-        userToCheck.userId = stoi(field);
-
-        if (user.userId == userToCheck.userId) {
-
-            getline(iss, field, '|');
-            person.contactId = stoi(field);
-
+        if (person.userId == idLoggedUser) {
             getline(iss, person.name, '|');
             getline(iss, person.lastName, '|');
             getline(iss, person.telNumber, '|');
@@ -253,12 +269,13 @@ vector <Contact> readContactsByUser(const User &user) {
             userContacts.push_back(person);
         }
     }
+
     file.close();
 
-    return userContacts;
+    return lastContactId;
 }
 
-void showSelected(const Contact &person) {
+void showSelected (const Contact &person) {
 
     cout << "ID number: \t\t" << person.contactId << endl;
     cout << "Name: \t\t\t" << person.name << endl;
@@ -268,20 +285,13 @@ void showSelected(const Contact &person) {
     cout << "Address: \t\t" << person.address << endl << endl;
 }
 
-void addContact(const User &user) {
-
-    vector <Contact> allContacts;
-    vector <Contact> userContacts;
-    system("cls");
-
-    allContacts = readAllContactsFromFile();
-    userContacts = readContactsByUser(user);
+int addContact (vector <Contact> &userContacts, int lastContactId, const int idLoggedUser) {
 
     system("cls");
     Contact person;
 
-    if (allContacts.empty()) person.contactId = 1;
-    else person.contactId = allContacts.back().contactId + 1;
+    person.contactId = ++lastContactId;
+    person.userId = idLoggedUser;
 
     cout << "Enter name: " ;
     person.name = loadLine();
@@ -295,25 +305,24 @@ void addContact(const User &user) {
     cout << "Enter email: ";
     person.email = loadLine();
 
-    cout << "Enter adaress: ";
+    cout << "Enter address: ";
     person.address = loadLine();
 
     userContacts.push_back(person);
-    addToContactsFile(person, user);
+    addToContactsFile(person);
 
     cout << "New contact created." << endl;
     Sleep(1500);
+
+    return lastContactId;
 }
 
-void searchByName(const User &user) {
+void searchByName (vector <Contact> userContacts) {
 
     system("cls");
-    vector <Contact> contacts;
     bool flag = true;
 
-    contacts = readContactsByUser(user);
-
-    if (contacts.empty()) {
+    if (userContacts.empty()) {
         cout << "There are no contacts yet" << endl;
         Sleep (1500);
         return;
@@ -323,7 +332,7 @@ void searchByName(const User &user) {
     string name = loadLine();
     cout << endl;
 
-    for (Contact person : contacts) {
+    for (Contact person : userContacts) {
         if (person.name == name) {
             showSelected(person);
             flag = false;
@@ -336,15 +345,12 @@ void searchByName(const User &user) {
     system("pause");
 }
 
-void searchByLastName(const User &user) {
+void searchByLastName (vector <Contact> userContacts) {
 
     system("cls");
-    vector <Contact> contacts;
     bool flag = true;
 
-    contacts = readContactsByUser(user);
-
-    if (contacts.empty()) {
+    if (userContacts.empty()) {
         cout << "There are no contacts yet" << endl;
         Sleep (1500);
         return;
@@ -354,7 +360,7 @@ void searchByLastName(const User &user) {
     string lastName = loadLine();
     cout << endl;
 
-    for (Contact person : contacts) {
+    for (Contact person : userContacts) {
         if (person.lastName == lastName) {
             showSelected(person);
             flag = false;
@@ -367,164 +373,129 @@ void searchByLastName(const User &user) {
     system("pause");
 }
 
-void showSavedContacts(const User &user) {
+void showSavedContacts (vector <Contact> userContacts) {
 
     system("cls");
-    vector <Contact> contacts;
 
-    contacts = readContactsByUser(user);
-
-    if (contacts.empty()) {
+    if (userContacts.empty()) {
         cout << "There are no contacts yet" << endl;
         Sleep (1500);
         return;
     }
 
-    for (Contact person : contacts) showSelected(person);
+    for (Contact person : userContacts) showSelected(person);
 
     system("pause");
 }
 
-void deleteContact(const User &user) {
+void fileSwapAndDelete (string oldFileName, string temporaryFileName) {
 
-    system("cls");
-
-    vector <string> temporaryVector;
-    vector <Contact> allContacts;
-    vector <Contact> userContacts;
-    string line, toDelete;
-    bool flag = false;
-    int contactId;
-    char choose;
-
-    userContacts = readContactsByUser(user);
-    allContacts = readAllContactsFromFile();
-
-    if (userContacts.empty()) {
-        cout << "There are no contacts yet" << endl;
-        Sleep (1500);
-        return;
-    }
-
-    cout << "Enter contact id: ";
-    cin >> contactId;
-
-    for (Contact person : userContacts)
-        if (person.contactId == contactId) flag = true;
-
-    if (flag) {
-
-        for (size_t i = 0; i < allContacts.size(); i++) {
-
-            if (allContacts[i].contactId == contactId) {
-
-                fstream file;
-                file.open("Contacts.txt", ios::in);
-                while (getline(file, line)) temporaryVector.push_back(line);
-                file.close();
-
-                toDelete = temporaryVector[i];
-
-                cout << "Press t, to confirm deletion or any other button to reject." << endl;
-                choose = getch();
-
-                if (choose == 't') {
-
-                    fstream file;
-                    file.open("Contacts.txt", ios::in);
-
-                    fstream file2;
-                    file2.open("temporaryContacts.txt", ios::out | ios::app);
-
-                    while (getline(file, line)) {
-                        if (line == toDelete) continue;
-                        file2 << line << endl;
-                    }
-
-                    file.close();
-                    file2.close();
-
-                    remove("Contacts.txt");
-                    rename("temporaryContacts.txt", "Contacts.txt");
-
-                    cout << "Contact has been deleted.";
-                    Sleep(1500);
-                    return;
-                }
-
-                else {
-                    cout << "Deletion cancelled.";
-                    Sleep(1500);
-                    return;
-                }
-            }
-        }
-    }
-
-    if (!flag) cout << "There is no contact for the given id number." << endl;
-
-    Sleep(1500);
+    if (std::remove(oldFileName.c_str()) != 0) perror("Error removing file");
+    if (rename(temporaryFileName.c_str(), oldFileName.c_str()) != 0) perror("Error renaming file");
 }
 
-void editMenu() {
+int modifyContactsFileAfterDelete(const int contactIdToDelete) {
 
-    cout << "Select data to edit." << endl;
-    cout << "1. Name." << endl;
-    cout << "2. Last name." << endl;
-    cout << "3. Telephone number." << endl;
-    cout << "4. Email." << endl;
-    cout << "5. Address." << endl;
-    cout << "6. Return to user menu." << endl;
-}
-
-void rewritingEdited(const Contact &person, const User &user, string toEdit) {
-
-    string line;
-    fstream file;
-    file.open("Contacts.txt", ios::in);
-
-    fstream file2;
-    file2.open("temporaryContacts.txt", ios::out | ios::app);
+    int lastContactId;
+    string line, field, oldFileName = "Contacts.txt", temporaryFileName = "temporaryContacts.txt";
+    ifstream file(oldFileName, ios::in);
+    ofstream temporaryfile(temporaryFileName, ios::out);
 
     while (getline(file, line)) {
-        if (line == toEdit) {
 
-            file2 << user.userId << "|";
-            file2 << person.contactId << "|";
-            file2 << person.name << "|";
-            file2 << person.lastName << "|";
-            file2 << person.telNumber << "|";
-            file2 << person.email << "|";
-            file2 << person.address << "|" << endl;
+        istringstream iss(line);
+        getline(iss, field, '|');
+        getline(iss, field, '|');
 
-            continue;
+        if (stoi(field) != contactIdToDelete) {
+            temporaryfile << line << endl;
+            lastContactId = stoi(field);
         }
-
-        file2 << line << endl;
     }
 
     file.close();
-    file2.close();
+    temporaryfile.close();
 
-    remove("Contacts.txt");
-    rename("temporaryContacts.txt", "Contacts.txt");
+    fileSwapAndDelete(oldFileName, temporaryFileName);
+
+    return lastContactId;
 }
 
-void editContact(const User &user) {
+int deleteContact (vector <Contact> &userContacts, int lastContactId) {
 
     system("cls");
-
-    vector <string> temporaryVector;
-    vector <Contact> allContacts;
-    vector <Contact> userContacts;
     Contact person;
-    string line, toEdit;
-    bool flag = false;
-    int contactId;
+    int contactIdToDelete;
     char choose;
 
-    allContacts = readAllContactsFromFile();
-    userContacts = readContactsByUser(user);
+    if (userContacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        Sleep (1500);
+        return lastContactId;
+    }
+
+    cout << "Enter contact id: ";
+    cin >> contactIdToDelete;
+
+    for (vector <Contact> :: iterator itr = userContacts.begin(); itr != userContacts.end(); itr++) {
+
+        person = *itr;
+        if (person.contactId == contactIdToDelete) {
+
+            cout << "Press t, to confirm deletion or any other button to reject." << endl;
+            choose = getch();
+
+            switch (choose) {
+
+            case 't':
+                userContacts.erase(itr);
+                lastContactId = modifyContactsFileAfterDelete(contactIdToDelete);
+                cout << "Contact has been deleted." << endl;
+                system("pause");
+                return lastContactId;
+
+            default:
+                cout << "Deletion cancelled." << endl;
+                system("pause");
+                return lastContactId;
+            }
+        }
+    }
+
+    cout << "There is no contact for the given id number." << endl;
+
+    Sleep(1500);
+
+    return lastContactId;
+}
+
+void modifyContactsFileAfterEdit(const Contact &person) {
+
+    string line, field, oldFileName = "Contacts.txt", temporaryFileName = "temporaryContacts.txt";
+    ifstream file(oldFileName, ios::in);
+    ofstream temporaryfile(temporaryFileName, ios::out);
+
+    while (getline(file, line)) {
+
+        istringstream iss(line);
+        getline(iss, field, '|');
+        getline(iss, field, '|');
+
+        if(stoi(field) != person.contactId) temporaryfile << line << endl;
+        else pasteContactToFile(temporaryfile, person);
+    }
+
+    file.close();
+    temporaryfile.close();
+
+    fileSwapAndDelete(oldFileName, temporaryFileName);
+}
+
+void editContact (vector <Contact> &userContacts) {
+
+    system("cls");
+    int contactId;
+    char choose;
 
     if (userContacts.empty()) {
         cout << "There are no contacts yet" << endl;
@@ -535,122 +506,85 @@ void editContact(const User &user) {
     cout << "Enter contact id: ";
     cin >> contactId;
 
-    for (Contact person : userContacts)
-        if (person.contactId == contactId) flag = true;
+    for (size_t i = 0; i < userContacts.size(); i++) {
 
-    if (flag) {
+        if (userContacts[i].contactId == contactId) {
 
-        for (size_t i = 0; i < allContacts.size(); i++) {
+            system("cls");
+            editMenu();
+            choose = getch();
 
-            if (allContacts[i].contactId == contactId) {
+            switch(choose) {
 
+            case '1':
                 system("cls");
-                editMenu();
+                cout << "Write new name: ";
+                userContacts[i].name = loadLine();
+                modifyContactsFileAfterEdit(userContacts[i]);
+                cout << "The contact has been changed";
+                Sleep(1500);
+                return;
 
-                fstream file;
-                file.open("Contacts.txt", ios::in);
-                while (getline(file, line)) temporaryVector.push_back(line);
-                file.close();
+            case '2':
+                system("cls");
+                cout << "Write new last name: ";
+                userContacts[i].lastName = loadLine();
+                modifyContactsFileAfterEdit(userContacts[i]);
+                cout << "The contact has been changed";
+                Sleep(1500);
+                return;
 
-                toEdit = temporaryVector[i];
-                person = allContacts[i];
-                choose = getch();
+            case '3':
+                system("cls");
+                cout << "Write new telephone number: ";
+                userContacts[i].telNumber = loadLine();
+                modifyContactsFileAfterEdit(userContacts[i]);
+                cout << "The contact has been changed";
+                Sleep(1500);
+                return;
 
-                switch(choose) {
+            case '4':
+                system("cls");
+                cout << "Write new email: ";
+                userContacts[i].email = loadLine();
+                modifyContactsFileAfterEdit(userContacts[i]);
+                cout << "The contact has been changed";
+                Sleep(1500);
+                return;
 
-                case '1':
+            case '5':
+                system("cls");
+                cout << "Write new address: ";
+                userContacts[i].address = loadLine();
+                modifyContactsFileAfterEdit(userContacts[i]);
+                cout << "The contact has been changed";
+                Sleep(1500);
+                return;
 
-                    system("cls");
-                    cout << "Write new name: ";
-                    person.name = loadLine();
-                    rewritingEdited(person, user, toEdit);
-                    cout << "The contact has been changed";
-                    Sleep(1500);
-                    break;
-
-                case '2':
-
-                    system("cls");
-                    cout << "Write new last name: ";
-                    person.lastName = loadLine();
-                    rewritingEdited(person, user, toEdit);
-                    cout << "The contact has been changed";
-                    Sleep(1500);
-                    break;
-
-                case '3':
-
-                    system("cls");
-                    cout << "Write new telephone number: ";
-                    person.telNumber = loadLine();
-                    rewritingEdited(person, user, toEdit);
-                    cout << "The contact has been changed";
-                    Sleep(1500);
-                    break;
-
-                case '4':
-
-                    system("cls");
-                    cout << "Write new email: ";
-                    person.email = loadLine();
-                    rewritingEdited(person, user, toEdit);
-                    cout << "The contact has been changed";
-                    Sleep(1500);
-                    break;
-
-                case '5':
-
-                    system("cls");
-                    cout << "Write new address: ";
-                    person.address = loadLine();
-                    rewritingEdited(person, user, toEdit);
-                    cout << "The contact has been changed";
-                    Sleep(1500);
-                    break;
-
-                case '6':
-                    return;
-                }
+            case '6':
+                return;
             }
         }
     }
 
-    if (!flag) cout << "There is no contact for the given id number." << endl;
+    cout << "There is no contact for the given id number." << endl;
 
     Sleep(1500);
-}
-
-void loginMenu() {
-
-    cout << "1. Registration" << endl;
-    cout << "2. Logging in" << endl;
-    cout << "9. End program" << endl;
-}
-
-void userMenu() {
-
-    cout << "1. Add contact." << endl;
-    cout << "2. Search by name." << endl;
-    cout << "3. Search by last name." << endl;
-    cout << "4. Show saved contacts." << endl;
-    cout << "5. Delete contact." << endl;
-    cout << "6. Edit contact." << endl;
-    cout << "7. Change password" << endl;
-    cout << "8. Log out" << endl;
 }
 
 int main() {
 
     vector <User> users;
+    vector <Contact> userContacts;
     char choose;
-    User user;
+    int lastContactId = 0;
 
     readUsersFromFile(users);
-    int idLogUser = 0;
+    int idLoggedUser = 0;
 
     while(1) {
 
-        if (idLogUser == 0) {
+        if (idLoggedUser == 0) {
 
             system("cls");
             loginMenu();
@@ -666,7 +600,10 @@ int main() {
                 if (users.empty()) {
                     cout << "There is no user yet";
                     Sleep(1500);
-                } else idLogUser = logging(users);
+                } else {
+                    idLoggedUser = logging(users);
+                    lastContactId = readContactsFromFile(userContacts, idLoggedUser);
+                }
                 break;
 
             case '9':
@@ -677,46 +614,33 @@ int main() {
 
             system("cls");
             userMenu();
-
-            for (vector <User> :: iterator itr = users.begin(); itr != users.end(); itr++) {
-                user = *itr;
-                if (user.userId == idLogUser) break;
-            }
-
             choose = getch();
 
             switch(choose) {
 
             case '1':
-                addContact(user);
+                lastContactId = addContact(userContacts, lastContactId, idLoggedUser);
                 break;
-
             case '2':
-                searchByName(user);
+                searchByName(userContacts);
                 break;
-
             case '3':
-                searchByLastName(user);
+                searchByLastName(userContacts);
                 break;
-
             case '4':
-                showSavedContacts(user);
+                showSavedContacts(userContacts);
                 break;
-
             case '5':
-                deleteContact(user);
+                lastContactId = deleteContact(userContacts, lastContactId);
                 break;
-
             case '6':
-                editContact(user);
+                editContact(userContacts);
                 break;
-
             case '7':
-                passwordChange(users, idLogUser);
+                passwordChange(users, idLoggedUser);
                 break;
-
             case '8':
-                idLogUser = 0;
+                idLoggedUser = 0;
             }
         }
     }
