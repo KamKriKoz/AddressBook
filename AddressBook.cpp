@@ -13,9 +13,6 @@ void AddressBook::showUsers() {
 void AddressBook::logging() {
 
     userManager.logging();
-}
-
-void AddressBook::passwordChange() {
-
     userManager.passwordChange();
+    userManager.loggingOut();
 }

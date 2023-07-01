@@ -28,6 +28,7 @@ public:
     void loadUsersFromFile();
     void logging();
     void passwordChange();
+    void loggingOut();
 };
 
 #endif // USERMANAGER_H

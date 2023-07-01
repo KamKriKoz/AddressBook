@@ -17,7 +17,6 @@ public:
     void userRegistration();
     void showUsers();
     void logging();
-    void passwordChange();
 };
 
 #endif // ADDRESSBOOK_H
