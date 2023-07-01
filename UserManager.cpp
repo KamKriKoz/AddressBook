@@ -93,3 +93,20 @@ void UserManager::logging() {
     system("pause");
     return;
 }
+
+void UserManager::passwordChange() {
+
+    string newPassword = "";
+
+    cout << "Enter new password: ";
+    cin >> newPassword;
+
+    for (size_t i = 0; i < users.size(); i++) {
+        if(users[i].getId() == idLoggedUser) {
+            users[i].setPassword(newPassword);
+            usersFile.overwriteUsersFile(users);
+            cout << "Password changed.";
+            system("pause");
+        }
+    }
+}

@@ -14,3 +14,8 @@ void AddressBook::logging() {
 
     userManager.logging();
 }
+
+void AddressBook::passwordChange() {
+
+    userManager.passwordChange();
+}

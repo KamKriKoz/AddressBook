@@ -23,6 +23,7 @@ public:
     UsersFile(string USERSFILENAME):usersFileName(USERSFILENAME) {};
     void addToUsersFile(User person);
     vector <User> loadUsersFromFile();
+    void overwriteUsersFile(vector <User> &users);
 };
 
 #endif // USERFILE_H

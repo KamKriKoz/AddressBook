@@ -27,6 +27,7 @@ public:
     void showUsers();
     void loadUsersFromFile();
     void logging();
+    void passwordChange();
 };
 
 #endif // USERMANAGER_H

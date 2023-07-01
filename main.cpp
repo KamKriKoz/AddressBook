@@ -13,5 +13,9 @@ int main() {
 
     addresBook.logging();
 
+    addresBook.passwordChange();
+
+    addresBook.showUsers();
+
     return 0;
 }
