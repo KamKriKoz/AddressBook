@@ -16,6 +16,7 @@ public:
     };
     void userRegistration();
     void showUsers();
+    void logging();
 };
 
 #endif // ADDRESSBOOK_H

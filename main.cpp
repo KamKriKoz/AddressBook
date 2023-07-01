@@ -9,8 +9,9 @@ int main() {
 
     addresBook.showUsers();
 
-    addresBook.userRegistration();
     //addresBook.userRegistration();
+
+    addresBook.logging();
 
     addresBook.showUsers();
 

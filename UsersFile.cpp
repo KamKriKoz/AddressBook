@@ -76,3 +76,18 @@ User UsersFile::downloadOneUserData(string oneUserData) {
     }
     return person;
 }
+
+void UsersFile::overwriteUsersFile(vector <User> &users) {
+
+    ofstream file;
+    file.open(usersFileName);
+
+    for (size_t i = 0; i < users.size(); i++) {
+
+        file << users[i].getId() << "|";
+        file << users[i].getLogin() << "|";
+        file << users[i].getPassword() << "|" << endl;
+    }
+
+    file.close();
+}
