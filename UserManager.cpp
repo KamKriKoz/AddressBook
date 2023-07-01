@@ -61,3 +61,35 @@ void UserManager::loadUsersFromFile() {
 
     users = usersFile.loadUsersFromFile();
 }
+
+void UserManager::logging() {
+
+    User person;
+    string login = "", password = "";
+    idLoggedUser = 0;
+
+    cout << endl << "Enter your login: ";
+    cin >> login;
+
+    for (User person : users) {
+        if(person.getLogin() == login) {
+            for (int trials = 3; trials > 0; trials--) {
+                cout << "Enter your password, " << trials << " attempts left: ";
+                cin >> password;
+
+                if (person.getPassword() == password) {
+                    cout << "Logged" << endl;
+                    idLoggedUser = person.getId();
+                    system ("pause");
+                    return;
+                }
+            }
+            cout << "3 times wrong password.";
+            system("pause");
+            return;
+        }
+    }
+    cout << "Username doesn't exist." << endl;
+    system("pause");
+    return;
+}

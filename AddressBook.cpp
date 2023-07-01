@@ -9,3 +9,8 @@ void AddressBook::showUsers() {
 
     userManager.showUsers();
 }
+
+void AddressBook::logging() {
+
+    userManager.logging();
+}

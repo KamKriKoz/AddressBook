@@ -9,10 +9,9 @@ int main() {
 
     addresBook.showUsers();
 
-    addresBook.userRegistration();
     //addresBook.userRegistration();
 
-    addresBook.showUsers();
+    addresBook.logging();
 
     return 0;
 }

@@ -26,6 +26,7 @@ public:
     void userRegistration();
     void showUsers();
     void loadUsersFromFile();
+    void logging();
 };
 
 #endif // USERMANAGER_H
