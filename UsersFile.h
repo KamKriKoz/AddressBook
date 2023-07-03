@@ -15,7 +15,6 @@ using namespace std;
 class UsersFile {
 
     const string usersFileName;
-    bool whetherFileIsEmpty(fstream &file);
     string transformatingToFormat(User person);
     User downloadOneUserData(string oneUserData);
 

@@ -8,18 +8,11 @@ void UsersFile::addToUsersFile(User person) {
 
     if (file.good() == true) {
         lineWithData = transformatingToFormat(person);
-        if (whetherFileIsEmpty(file) == true) file << lineWithData;
+        if (HelperMethods::whetherFileIsEmpty(file) == true) file << lineWithData;
         else file << endl << lineWithData;
         file.close();
     }
     else cout << "File " << usersFileName << " failed to open." << endl;
-}
-
-bool UsersFile::whetherFileIsEmpty(fstream &file) {
-
-    file.seekg(0, ios::end);
-    if(file.tellg() == 0) return true;
-    else return false;
 }
 
 string UsersFile::transformatingToFormat(User person) {
