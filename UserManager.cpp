@@ -55,6 +55,7 @@ void UserManager::showUsers() {
             cout << users[i].getLogin() << endl;
             cout << users[i].getPassword() << endl;
     }
+    system("pause");
 }
 
 void UserManager::loadUsersFromFile() {
@@ -114,4 +115,9 @@ void UserManager::passwordChange() {
 void UserManager::loggingOut() {
 
     idLoggedUser = 0;
+}
+
+int UserManager::getidLoggedUser() {
+
+    return idLoggedUser;
 }
