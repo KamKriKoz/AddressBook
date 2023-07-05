@@ -22,8 +22,8 @@ class UserManager {
     UsersFile usersFile;
 
 public:
-    UserManager(string usersFileName):usersFile(usersFileName) {};
-    int getidLoggedUser();
+
+    int getIdLoggedUser();
     void userRegistration();
     void showUsers();
     void loadUsersFromFile();

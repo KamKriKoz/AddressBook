@@ -1,5 +1,10 @@
 #include "AddressBook.h"
 
+void AddressBook::loadUsers() {
+
+    userManager.loadUsersFromFile();
+}
+
 void AddressBook::userRegistration() {
 
     userManager.userRegistration();
@@ -14,7 +19,7 @@ void AddressBook::logging() {
 
     userManager.logging();
 
-    while (userManager.getidLoggedUser() != 0) {
+    while (userManager.getIdLoggedUser() != 0) {
 
         system("cls");
         cout << "1. Add contact." << endl;
@@ -27,6 +32,7 @@ void AddressBook::logging() {
         cout << "8. Log out" << endl;
 
         char choose;
+        contactManager.setIdLoggedUser(userManager.getIdLoggedUser());
         choose = getch();
 
         switch (choose) {

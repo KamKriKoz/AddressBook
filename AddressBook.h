@@ -14,9 +14,8 @@ class AddressBook {
     ContactManager contactManager;
 
 public:
-    AddressBook(string usersFileName):userManager(usersFileName) {
-        userManager.loadUsersFromFile();
-    };
+
+    void loadUsers();
     void userRegistration();
     void showUsers();
     void logging();

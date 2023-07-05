@@ -4,7 +4,7 @@ void ContactManager::addContact(){
 
     Contact person = enterNewContactDetails();
     contacts.push_back(person);
-    //contactsFile.addToContactsFile(person);
+    contactsFile.addToContactsFile(person);
 
     cout << "Contact created" << endl;
     system ("pause");
@@ -13,6 +13,7 @@ void ContactManager::addContact(){
 
 Contact ContactManager::enterNewContactDetails() {
 
+    system("cls");
     string name, lastName, telNumber, email, address;
     Contact person;
     person.setContactId(getNewContactId());

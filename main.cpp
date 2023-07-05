@@ -16,12 +16,13 @@ void loginMenu() {
 
 int main() {
 
-    AddressBook addresBook("Users.txt");
+    AddressBook addresBook;
     char choose;
 
     while(1) {
 
         system("cls");
+        addresBook.loadUsers();
         loginMenu();
         choose = getch();
 

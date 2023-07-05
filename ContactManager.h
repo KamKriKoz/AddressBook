@@ -7,7 +7,7 @@
 #include <fstream>
 #include <sstream>
 #include "Contact.h"
-//#include "ContactsFile.h"
+#include "ContactsFile.h"
 
 using namespace std;
 
@@ -18,10 +18,9 @@ class ContactManager {
 
     Contact enterNewContactDetails();
     int getNewContactId();
-  //  ContactsFile contactsFile;
+    ContactsFile contactsFile;
 
 public:
- //   ContactManager(string contactsFileName):contactsFile(contactsFileName) {};
     void setIdLoggedUser(int loggedUser);
     void addContact();
     void showContacts();

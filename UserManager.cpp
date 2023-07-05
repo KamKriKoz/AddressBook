@@ -117,7 +117,7 @@ void UserManager::loggingOut() {
     idLoggedUser = 0;
 }
 
-int UserManager::getidLoggedUser() {
+int UserManager::getIdLoggedUser() {
 
     return idLoggedUser;
 }
