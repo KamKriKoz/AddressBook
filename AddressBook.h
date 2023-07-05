@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include "UserManager.h"
+#include "ContactManager.h"
 #include <conio.h>
 
 using namespace std;
@@ -10,6 +11,7 @@ using namespace std;
 class AddressBook {
 
     UserManager userManager;
+    ContactManager contactManager;
 
 public:
     AddressBook(string usersFileName):userManager(usersFileName) {

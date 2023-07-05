@@ -31,12 +31,21 @@ void AddressBook::logging() {
 
         switch (choose) {
 
+        case '1':
+            contactManager.addContact();
+            break;
+
+        case '4':
+            contactManager.showContacts();
+            break;
+
         case '7':
             userManager.passwordChange();
             break;
 
         case '8':
             userManager.loggingOut();
+            contactManager.clearContacts();
             break;
         }
     }
