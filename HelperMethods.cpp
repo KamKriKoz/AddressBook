@@ -14,3 +14,21 @@ bool HelperMethods::whetherFileIsEmpty(fstream &file) {
     if(file.tellg() == 0) return true;
     else return false;
 }
+
+int HelperMethods::conversionToInt(string number) {
+
+    int numInt;
+    istringstream iss(number);
+    iss >> numInt;
+    return numInt;
+}
+
+string HelperMethods::getNumber(string text, int position) {
+    string number = "";
+    while(isdigit(text[position]) == true)
+    {
+        number += text[position];
+        position ++;
+    }
+    return number;
+}

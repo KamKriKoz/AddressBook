@@ -1,5 +1,10 @@
 #include "UsersFile.h"
 
+UsersFile::UsersFile() {
+
+    usersFileName = "Users.txt";
+}
+
 void UsersFile::addToUsersFile(User person) {
 
     string lineWithData;
@@ -75,11 +80,17 @@ void UsersFile::overwriteUsersFile(vector <User> &users) {
     ofstream file;
     file.open(usersFileName);
 
-    for (size_t i = 0; i < users.size(); i++) {
+    file << users[0].getId() << "|";
+    file << users[0].getLogin() << "|";
+    file << users[0].getPassword() << "|";
 
+    for (size_t i = 1; i < users.size(); i++) {
+
+        file << endl;
         file << users[i].getId() << "|";
         file << users[i].getLogin() << "|";
-        file << users[i].getPassword() << "|" << endl;
+        file << users[i].getPassword() << "|";
+
     }
 
     file.close();
