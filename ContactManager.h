@@ -14,6 +14,7 @@ using namespace std;
 class ContactManager {
 
     int idLoggedUser;
+    int lastContactId;
     vector <Contact> contacts;
 
     Contact enterNewContactDetails();
@@ -21,12 +22,14 @@ class ContactManager {
     ContactsFile contactsFile;
 
 public:
+    int getIdLoggedUser();
+    void setLastContactId(int lastContact);
     void setIdLoggedUser(int loggedUser);
     void addContact();
     void showContacts();
     void showContactData(Contact person);
     void clearContacts();
- //   void loadContactsFromFile();
+    void loadContactsFromFile();
 };
 
 #endif // CONTACTMANAGER_H

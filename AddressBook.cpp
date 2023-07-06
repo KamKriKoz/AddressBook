@@ -33,6 +33,7 @@ void AddressBook::logging() {
 
         char choose;
         contactManager.setIdLoggedUser(userManager.getIdLoggedUser());
+        contactManager.loadContactsFromFile();
         choose = getch();
 
         switch (choose) {

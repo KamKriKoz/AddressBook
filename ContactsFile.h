@@ -15,13 +15,17 @@ using namespace std;
 class ContactsFile {
 
     string contactsFileName;
+    int lastContactId;
     string transformatingContactToFormat(Contact person);
-    // Contact downloadOneUserData(string oneUserData);
+    Contact downloadOneContactData(string oneContactData);
+    int getUserIdFromLine(string oneContactData);
+    int getContactIdFromLine(string oneContactData);
 
 public:
     ContactsFile();
     void addToContactsFile(Contact person);
-   // vector <Contact> loadContactsFromFile();
+    vector <Contact> loadContactsFromFile(int idLoggedUser);
+    int getLastContactId();
 };
 
 #endif // CONTACTSFILE_H

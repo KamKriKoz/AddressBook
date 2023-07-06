@@ -16,7 +16,7 @@ Contact ContactManager::enterNewContactDetails() {
     system("cls");
     string name, lastName, telNumber, email, address;
     Contact person;
-    person.setContactId(getNewContactId());
+    person.setContactId(contactsFile.getLastContactId() + 1);
     person.setUserId(idLoggedUser);
 
     cout << "Enter name: ";
@@ -41,13 +41,13 @@ Contact ContactManager::enterNewContactDetails() {
 
     return person;
 }
-
+/*
 int ContactManager::getNewContactId() {
 
     if(contacts.empty() == true) return 1;
     else return contacts.back().getContactId()+ 1;
 }
-
+*/
 void ContactManager::setIdLoggedUser(int loggedUser) {
 
     idLoggedUser = loggedUser;
@@ -77,4 +77,19 @@ void ContactManager::showContactData(Contact person) {
 void ContactManager::clearContacts() {
 
     contacts.clear();
+}
+
+void ContactManager::loadContactsFromFile() {
+
+    contacts = contactsFile.loadContactsFromFile(idLoggedUser);
+}
+
+void ContactManager::setLastContactId(int lastContact)  {
+
+    lastContactId = lastContact;
+}
+
+int ContactManager::getIdLoggedUser() {
+
+    return idLoggedUser;
 }
