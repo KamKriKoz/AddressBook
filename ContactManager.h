@@ -23,7 +23,6 @@ class ContactManager {
 
 public:
     int getIdLoggedUser();
-    void setLastContactId(int lastContact);
     void setIdLoggedUser(int loggedUser);
     void addContact();
     void showContacts();

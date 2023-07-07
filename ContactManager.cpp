@@ -20,34 +20,28 @@ Contact ContactManager::enterNewContactDetails() {
     person.setUserId(idLoggedUser);
 
     cout << "Enter name: ";
-    cin >> name;
+    name = HelperMethods::loadLine();
     person.setName(name);
 
     cout << "Enter last name: ";
-    cin >> lastName;
+    lastName = HelperMethods::loadLine();
     person.setLastName(lastName);
 
     cout << "Enter telephone number: ";
-    cin >> telNumber;
+    telNumber = HelperMethods::loadLine();
     person.setTelNumber(telNumber);
 
     cout << "Enter email: ";
-    cin >> email;
+    email = HelperMethods::loadLine();
     person.setEmail(email);
 
     cout << "Enter address: ";
-    cin >> address;
+    address = HelperMethods::loadLine();
     person.setAddress(address);
 
     return person;
 }
-/*
-int ContactManager::getNewContactId() {
 
-    if(contacts.empty() == true) return 1;
-    else return contacts.back().getContactId()+ 1;
-}
-*/
 void ContactManager::setIdLoggedUser(int loggedUser) {
 
     idLoggedUser = loggedUser;
@@ -82,11 +76,6 @@ void ContactManager::clearContacts() {
 void ContactManager::loadContactsFromFile() {
 
     contacts = contactsFile.loadContactsFromFile(idLoggedUser);
-}
-
-void ContactManager::setLastContactId(int lastContact)  {
-
-    lastContactId = lastContact;
 }
 
 int ContactManager::getIdLoggedUser() {

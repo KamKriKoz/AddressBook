@@ -32,3 +32,11 @@ string HelperMethods::getNumber(string text, int position) {
     }
     return number;
 }
+
+string HelperMethods::loadLine() {
+
+    string input = "";
+    cin.sync();
+    getline(cin, input);
+    return input;
+}

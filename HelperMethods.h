@@ -14,6 +14,7 @@ public:
     static bool whetherFileIsEmpty(fstream &file);
     static int conversionToInt(string number);
     static string getNumber(string text, int position);
+    static string loadLine();
 };
 
 #endif // HELPERMETHODS_H
