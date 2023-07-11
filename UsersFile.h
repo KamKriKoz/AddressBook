@@ -14,12 +14,12 @@ using namespace std;
 
 class UsersFile {
 
-    string usersFileName;
+    const string USERS_FILE_NAME;
     string transformatingToFormat(User person);
     User downloadOneUserData(string oneUserData);
 
 public:
-    UsersFile();
+    UsersFile(string usersFileName) : USERS_FILE_NAME(usersFileName) {};
     void addToUsersFile(User person);
     vector <User> loadUsersFromFile();
     void overwriteUsersFile(vector <User> &users);

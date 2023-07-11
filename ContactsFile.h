@@ -14,16 +14,20 @@ using namespace std;
 
 class ContactsFile {
 
-    string contactsFileName;
+    const string CONTACTS_FILE_NAME;
     int lastContactId;
+
     string transformatingContactToFormat(Contact person);
     Contact downloadOneContactData(string oneContactData);
     int getUserIdFromLine(string oneContactData);
     int getContactIdFromLine(string oneContactData);
 
 public:
-    ContactsFile();
-    void addToContactsFile(Contact person);
+
+    ContactsFile(string contactsFileName) : CONTACTS_FILE_NAME(contactsFileName) {
+        lastContactId = 0;
+    };
+    bool addToContactsFile(Contact person);
     vector <Contact> loadContactsFromFile(int idLoggedUser);
     int getLastContactId();
 };

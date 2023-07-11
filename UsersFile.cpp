@@ -1,23 +1,57 @@
 #include "UsersFile.h"
 
-UsersFile::UsersFile() {
-
-    usersFileName = "Users.txt";
-}
-
 void UsersFile::addToUsersFile(User person) {
 
     string lineWithData;
     fstream file;
-    file.open(usersFileName.c_str(), ios::app);
+    file.open(USERS_FILE_NAME.c_str(), ios::app);
 
-    if (file.good() == true) {
+    if (file.good()) {
         lineWithData = transformatingToFormat(person);
-        if (HelperMethods::whetherFileIsEmpty(file) == true) file << lineWithData;
+        if (HelperMethods::whetherFileIsEmpty(file)) file << lineWithData;
         else file << endl << lineWithData;
         file.close();
     }
-    else cout << "File " << usersFileName << " failed to open." << endl;
+    else cout << "File " << USERS_FILE_NAME << " failed to open." << endl;
+}
+
+vector <User> UsersFile::loadUsersFromFile() {
+
+    User person;
+    vector <User> users;
+    string oneUserData = "";
+    fstream file;
+    file.open(USERS_FILE_NAME.c_str(), ios::in);
+
+    if (file.good()) {
+        while (getline(file, oneUserData)) {
+            person = downloadOneUserData(oneUserData);
+            users.push_back(person);
+        }
+        file.close();
+    }
+    return users;
+}
+
+void UsersFile::overwriteUsersFile(vector <User> &users) {
+
+    ofstream file;
+    file.open(USERS_FILE_NAME);
+
+    file << users[0].getId() << "|";
+    file << users[0].getLogin() << "|";
+    file << users[0].getPassword() << "|";
+
+    for (size_t i = 1; i < users.size(); i++) {
+
+        file << endl;
+        file << users[i].getId() << "|";
+        file << users[i].getLogin() << "|";
+        file << users[i].getPassword() << "|";
+
+    }
+
+    file.close();
 }
 
 string UsersFile::transformatingToFormat(User person) {
@@ -30,31 +64,13 @@ string UsersFile::transformatingToFormat(User person) {
     return lineWithData;
 }
 
-vector <User> UsersFile::loadUsersFromFile() {
-
-    User person;
-    vector <User> users;
-    string oneUserData = "";
-    fstream file;
-    file.open(usersFileName.c_str(), ios::in);
-
-    if (file.good() == true) {
-        while (getline(file, oneUserData)) {
-            person = downloadOneUserData(oneUserData);
-            users.push_back(person);
-        }
-        file.close();
-    }
-    return users;
-}
-
 User UsersFile::downloadOneUserData(string oneUserData) {
 
     User person;
     string singleData = "";
     int numberOfSingleData = 1;
 
-    for (int position = 0; position < oneUserData.length(); position++) {
+    for (size_t position = 0; position < oneUserData.length(); position++) {
         if (oneUserData[position] != '|') singleData += oneUserData[position];
         else {
             switch (numberOfSingleData) {
@@ -73,25 +89,4 @@ User UsersFile::downloadOneUserData(string oneUserData) {
         }
     }
     return person;
-}
-
-void UsersFile::overwriteUsersFile(vector <User> &users) {
-
-    ofstream file;
-    file.open(usersFileName);
-
-    file << users[0].getId() << "|";
-    file << users[0].getLogin() << "|";
-    file << users[0].getPassword() << "|";
-
-    for (size_t i = 1; i < users.size(); i++) {
-
-        file << endl;
-        file << users[i].getId() << "|";
-        file << users[i].getLogin() << "|";
-        file << users[i].getPassword() << "|";
-
-    }
-
-    file.close();
 }

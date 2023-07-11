@@ -1,7 +1,13 @@
 #include "UserManager.h"
 
-void UserManager::userRegistration(){
+int UserManager::getIdLoggedUser() {
 
+    return idLoggedUser;
+}
+
+void UserManager::userRegistration() {
+
+    system ("cls");
     User person = enterNewUserDetails();
     users.push_back(person);
     usersFile.addToUsersFile(person);
@@ -11,75 +17,29 @@ void UserManager::userRegistration(){
     cout << endl;
 }
 
-User UserManager::enterNewUserDetails(){
-
-    User person;
-    person.setId(getNewUserId());
-    string login, password;
-
-    do {
-        cout << "Enter your login: ";
-        cin >> login;
-        person.setLogin(login);
-    } while (whetherThereIsLogin(person.getLogin()) == true);
-
-    cout << "Enter your password: ";
-    cin >> password;
-    person.setPassword(password);
-
-    return person;
-}
-
-int UserManager::getNewUserId() {
-
-    if(users.empty() == true) return 1;
-    else return users.back().getId()+ 1;
-}
-
-bool UserManager::whetherThereIsLogin(string login) {
-
-    for (int i = 0; i < users.size(); i++) {
-        if (users[i].getLogin() == login) {
-            cout << endl << "User exist";
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void UserManager::showUsers() {
 
-    for (int i = 0; i < users.size(); i++) {
-            cout << users[i].getId() << endl;
-            cout << users[i].getLogin() << endl;
-            cout << users[i].getPassword() << endl;
-    }
+    for (size_t i = 0; i < users.size(); i++) showSingleUser(i);
+
+    cout << endl;
     system("pause");
-}
-
-void UserManager::loadUsersFromFile() {
-
-    users = usersFile.loadUsersFromFile();
 }
 
 void UserManager::logging() {
 
-    User person;
     string login = "", password = "";
-    idLoggedUser = 0;
 
     cout << endl << "Enter your login: ";
-    cin >> login;
+    login = HelperMethods::loadLine();
 
     for (User person : users) {
         if(person.getLogin() == login) {
             for (int trials = 3; trials > 0; trials--) {
                 cout << "Enter your password, " << trials << " attempts left: ";
-                cin >> password;
+                password = HelperMethods::loadLine();
 
                 if (person.getPassword() == password) {
-                    cout << "Logged" << endl;
+                    cout << "Logged." << endl;
                     idLoggedUser = person.getId();
                     system ("pause");
                     return;
@@ -92,24 +52,24 @@ void UserManager::logging() {
     }
     cout << "Username doesn't exist." << endl;
     system("pause");
-    return;
 }
 
 void UserManager::passwordChange() {
 
     string newPassword = "";
+    system("cls");
 
     cout << "Enter new password: ";
-    cin >> newPassword;
+    newPassword = HelperMethods::loadLine();
 
-    for (size_t i = 0; i < users.size(); i++) {
-        if(users[i].getId() == idLoggedUser) {
-            users[i].setPassword(newPassword);
-            usersFile.overwriteUsersFile(users);
-            cout << "Password changed.";
+    for (vector <User>::iterator itr = users.begin(); itr != users.end(); itr++) {
+        if (itr -> getId() == idLoggedUser) {
+            itr -> setPassword(newPassword);
+            cout << "Password changed." << endl;
             system("pause");
         }
     }
+    usersFile.overwriteUsersFile(users);
 }
 
 void UserManager::loggingOut() {
@@ -117,7 +77,53 @@ void UserManager::loggingOut() {
     idLoggedUser = 0;
 }
 
-int UserManager::getIdLoggedUser() {
+bool UserManager::whetherUserIsLogged() {
 
-    return idLoggedUser;
+    if (idLoggedUser > 0) return true;
+    else return false;
+}
+
+void UserManager::showSingleUser(size_t i) {
+
+    cout << endl;
+    cout << "User ID number: \t" << users[i].getId() << endl;
+    cout << "User login: \t\t" << users[i].getLogin() << endl;
+    //cout << "User password: \t\t" << users[i].getPassword() << endl;
+}
+
+User UserManager::enterNewUserDetails() {
+
+    User person;
+    person.setId(getNewUserId());
+    string login, password;
+
+    do {
+        cout << "Enter your login: ";
+        login = HelperMethods::loadLine();
+        person.setLogin(login);
+    } while (whetherThereIsLogin(person.getLogin()));
+
+    cout << "Enter your password: ";
+    password = HelperMethods::loadLine();
+    person.setPassword(password);
+
+    return person;
+}
+
+int UserManager::getNewUserId() {
+
+    if (users.empty()) return 1;
+    else return users.back().getId()+ 1;
+}
+
+bool UserManager::whetherThereIsLogin(string login) {
+
+    for (size_t i = 0; i < users.size(); i++) {
+        if (users[i].getLogin() == login) {
+            cout << "User exist. Try again." << endl;
+            return true;
+        }
+    }
+
+    return false;
 }

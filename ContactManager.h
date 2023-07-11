@@ -13,22 +13,23 @@ using namespace std;
 
 class ContactManager {
 
-    int idLoggedUser;
-    int lastContactId;
+    const int ID_LOGGED_USER;
+    ContactsFile contactsFile;
     vector <Contact> contacts;
 
     Contact enterNewContactDetails();
-    int getNewContactId();
-    ContactsFile contactsFile;
+    void showContactData(Contact person);
+
+
 
 public:
-    int getIdLoggedUser();
-    void setIdLoggedUser(int loggedUser);
+
+    ContactManager(string contactsFileName, int idLoggedUser)
+        : contactsFile(contactsFileName), ID_LOGGED_USER(idLoggedUser) {
+        contacts = contactsFile.loadContactsFromFile(ID_LOGGED_USER);
+    };
     void addContact();
-    void showContacts();
-    void showContactData(Contact person);
-    void clearContacts();
-    void loadContactsFromFile();
+    void showAllContacts();
 };
 
 #endif // CONTACTMANAGER_H

@@ -15,21 +15,27 @@ class UserManager {
 
     int idLoggedUser;
     vector <User> users;
+    UsersFile usersFile;
 
+    void showSingleUser(size_t i);
     User enterNewUserDetails();
     int getNewUserId();
     bool whetherThereIsLogin(string login);
-    UsersFile usersFile;
+
 
 public:
 
-    int getIdLoggedUser();
+    UserManager(string usersFileName) : usersFile(usersFileName) {
+        idLoggedUser = 0;
+        users = usersFile.loadUsersFromFile();
+    };
+    void logging();
     void userRegistration();
     void showUsers();
-    void loadUsersFromFile();
-    void logging();
     void passwordChange();
     void loggingOut();
+    bool whetherUserIsLogged();
+    int getIdLoggedUser();
 };
 
 #endif // USERMANAGER_H

@@ -1,14 +1,28 @@
 #include "ContactManager.h"
 
-void ContactManager::addContact(){
+void ContactManager::addContact() {
+
+    system("cls");
+    cout << "ADDING NEW CONTACT" << endl << endl;
 
     Contact person = enterNewContactDetails();
     contacts.push_back(person);
-    contactsFile.addToContactsFile(person);
 
-    cout << "Contact created" << endl;
+    if (contactsFile.addToContactsFile(person)) cout << "Contact created." << endl;
+    else cout << "Adding new contact failed. Check file of contacts." << endl;
+
     system ("pause");
-    cout << endl;
+}
+
+void ContactManager::showAllContacts() {
+
+    system("cls");
+    if (!contacts.empty()) {
+
+        for (Contact person : contacts) showContactData(person);
+
+    } else cout << "Address book is empty." << endl;
+    system("pause");
 }
 
 Contact ContactManager::enterNewContactDetails() {
@@ -17,7 +31,7 @@ Contact ContactManager::enterNewContactDetails() {
     string name, lastName, telNumber, email, address;
     Contact person;
     person.setContactId(contactsFile.getLastContactId() + 1);
-    person.setUserId(idLoggedUser);
+    person.setUserId(ID_LOGGED_USER);
 
     cout << "Enter name: ";
     name = HelperMethods::loadLine();
@@ -42,43 +56,12 @@ Contact ContactManager::enterNewContactDetails() {
     return person;
 }
 
-void ContactManager::setIdLoggedUser(int loggedUser) {
-
-    idLoggedUser = loggedUser;
-}
-
-void ContactManager::showContacts() {
-
-    system("cls");
-    if (!contacts.empty()) {
-
-        for (Contact person : contacts) showContactData(person);
-
-    } else cout << "Address book is empty." << endl;
-    system("pause");
-}
-
 void ContactManager::showContactData(Contact person) {
 
-    cout << "ID number: \t\t" << person.getContactId() << endl;
+    cout << "Contact ID number: \t" << person.getContactId() << endl;
     cout << "Name: \t\t\t" << person.getName() << endl;
     cout << "Last name: \t\t" << person.getLastName() << endl;
     cout << "Telephone number: \t" << person.getTelNumber() << endl;
     cout << "Email: \t\t\t" << person.getEmail() << endl;
     cout << "Address: \t\t" << person.getAddress() << endl << endl;
-}
-
-void ContactManager::clearContacts() {
-
-    contacts.clear();
-}
-
-void ContactManager::loadContactsFromFile() {
-
-    contacts = contactsFile.loadContactsFromFile(idLoggedUser);
-}
-
-int ContactManager::getIdLoggedUser() {
-
-    return idLoggedUser;
 }

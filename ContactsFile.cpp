@@ -1,24 +1,57 @@
 #include "ContactsFile.h"
 
-ContactsFile::ContactsFile() {
+int ContactsFile::getLastContactId() {
 
-    contactsFileName = "Contacts.txt";
-    lastContactId = 0;
+    return lastContactId;
 }
 
-void ContactsFile::addToContactsFile(Contact person) {
+bool ContactsFile::addToContactsFile(Contact person) {
 
     string lineWithData;
     fstream file;
-    file.open(contactsFileName.c_str(), ios::app);
+    file.open(CONTACTS_FILE_NAME.c_str(), ios::app);
 
     if (file.good() == true) {
         lineWithData = transformatingContactToFormat(person);
+
         if (HelperMethods::whetherFileIsEmpty(file) == true) file << lineWithData;
         else file << endl << lineWithData;
+
+        lastContactId++;
+        return true;
+    } else {
+        cout << "File " << CONTACTS_FILE_NAME << " failed to open." << endl;
+        return false;
+    }
+
+    file.close();
+}
+
+vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
+
+    Contact person;
+    vector <Contact> contacts;
+    string oneContactData = "";
+    string lastContactData = "";
+    fstream file;
+    file.open(CONTACTS_FILE_NAME.c_str(), ios::in);
+
+    if (file.good() == true) {
+        while (getline(file, oneContactData)) {
+
+            if(idLoggedUser == getUserIdFromLine(oneContactData)) {
+
+                person = downloadOneContactData(oneContactData);
+                contacts.push_back(person);
+            }
+            lastContactId = getContactIdFromLine(oneContactData);
+        }
+    file.close();
+    } else {
+        cout << endl << "File " << CONTACTS_FILE_NAME << " failed to open." << endl << endl;
         file.close();
     }
-    else cout << "File " << contactsFileName << " failed to open." << endl;
+    return contacts;
 }
 
 string ContactsFile::transformatingContactToFormat(Contact person) {
@@ -33,32 +66,6 @@ string ContactsFile::transformatingContactToFormat(Contact person) {
     lineWithData += person.getAddress() + '|';
 
     return lineWithData;
-}
-
-vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
-
-    Contact person;
-    vector <Contact> contacts;
-    string oneContactData = "";
-    string lastContactData = "";
-    fstream file;
-    file.open(contactsFileName.c_str(), ios::in);
-
-    if (file.good() == true) {
-        while (getline(file, oneContactData)) {
-
-            if(idLoggedUser == getUserIdFromLine(oneContactData)) {
-
-                person = downloadOneContactData(oneContactData);
-                contacts.push_back(person);
-            }
-            lastContactId = getContactIdFromLine(oneContactData);
-        }
-    } else cout << endl << "File " << contactsFileName << " failed to open." << endl << endl;
-
-    file.close();
-
-    return contacts;
 }
 
 int ContactsFile::getUserIdFromLine(string oneContactData) {
@@ -83,7 +90,7 @@ Contact ContactsFile::downloadOneContactData(string oneContactData) {
     string singleData = "";
     int numberOfSingleData = 1;
 
-    for (int position = 0; position < oneContactData.length(); position++) {
+    for (size_t position = 0; position < oneContactData.length(); position++) {
         if (oneContactData[position] != '|') singleData += oneContactData[position];
         else {
             switch (numberOfSingleData) {
@@ -115,9 +122,3 @@ Contact ContactsFile::downloadOneContactData(string oneContactData) {
     }
     return person;
 }
-
-int ContactsFile::getLastContactId() {
-
-    return lastContactId;
-}
-
