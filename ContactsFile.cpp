@@ -11,10 +11,10 @@ bool ContactsFile::addToContactsFile(Contact person) {
     fstream file;
     file.open(CONTACTS_FILE_NAME.c_str(), ios::app);
 
-    if (file.good() == true) {
+    if (file.good()) {
         lineWithData = transformatingContactToFormat(person);
 
-        if (HelperMethods::whetherFileIsEmpty(file) == true) file << lineWithData;
+        if (HelperMethods::whetherFileIsEmpty(file)) file << lineWithData;
         else file << endl << lineWithData;
 
         lastContactId++;
@@ -36,7 +36,7 @@ vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
     fstream file;
     file.open(CONTACTS_FILE_NAME.c_str(), ios::in);
 
-    if (file.good() == true) {
+    if (file.good()) {
         while (getline(file, oneContactData)) {
 
             if(idLoggedUser == getUserIdFromLine(oneContactData)) {
@@ -71,17 +71,12 @@ string ContactsFile::transformatingContactToFormat(Contact person) {
 int ContactsFile::getUserIdFromLine(string oneContactData) {
 
     int position = oneContactData.find_first_of('|') + 1;
-    int userId = HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, position));
-
-    return userId;
+    return HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, position));
 }
 
 int ContactsFile::getContactIdFromLine(string oneContactData) {
 
-    int position = 0;
-    int contactId = HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, position));
-
-    return contactId;
+    return HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, 0));
 }
 
 Contact ContactsFile::downloadOneContactData(string oneContactData) {

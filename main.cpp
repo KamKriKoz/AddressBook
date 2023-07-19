@@ -28,7 +28,7 @@ int main() {
                 break;
 
             case'3':
-                    addresBook.showUsers();
+                addresBook.showUsers();
                 break;
 
             case '9':
@@ -50,6 +50,10 @@ int main() {
 
             case '1':
                 addresBook.addContact();
+                break;
+
+            case '2':
+                addresBook.searchByName();
                 break;
 
             case '4':

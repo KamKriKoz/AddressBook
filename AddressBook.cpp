@@ -48,6 +48,15 @@ void AddressBook::showAllContacts() {
     }
 }
 
+void AddressBook::searchByName() {
+
+    if (userManager.whetherUserIsLogged()) contactManager -> searchByName();
+    else {
+        cout << "You must be logged in to add a contact" << endl;
+        system("pause");
+    }
+}
+
 void AddressBook::loginMenu() {
 
     cout << "1. Registration" << endl;
@@ -59,7 +68,7 @@ void AddressBook::loginMenu() {
 void AddressBook::userMenu() {
 
     cout << "1. Add contact." << endl;
-    cout << "2. Search by name./FUTURE/" << endl;
+    cout << "2. Search by name." << endl;
     cout << "3. Search by last name./FUTURE/" << endl;
     cout << "4. Show saved contacts." << endl;
     cout << "5. Delete contact./FUTURE/" << endl;
@@ -70,6 +79,5 @@ void AddressBook::userMenu() {
 
 bool AddressBook::whetherUserIsLogged(){
 
-    if (userManager.whetherUserIsLogged()) return true;
-    else return false;
+    return userManager.whetherUserIsLogged();
 }

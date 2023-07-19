@@ -36,6 +36,7 @@ public:
     void loginMenu();
     void userMenu();
     bool whetherUserIsLogged();
+    void searchByName();
 };
 
 #endif // ADDRESSBOOK_H

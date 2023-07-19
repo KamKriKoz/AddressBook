@@ -20,8 +20,6 @@ class ContactManager {
     Contact enterNewContactDetails();
     void showContactData(Contact person);
 
-
-
 public:
 
     ContactManager(string contactsFileName, int idLoggedUser)
@@ -30,6 +28,7 @@ public:
     };
     void addContact();
     void showAllContacts();
+    void searchByName();
 };
 
 #endif // CONTACTMANAGER_H
