@@ -75,6 +75,15 @@ void AddressBook::deleteContact() {
     }
 }
 
+void AddressBook::editContact() {
+
+    if (userManager.whetherUserIsLogged()) contactManager -> editContact();
+    else {
+        cout << "You must be logged in to edit contact." << endl;
+        system("pause");
+    }
+}
+
 void AddressBook::loginMenu() {
 
     cout << "1. Registration." << endl;
@@ -90,7 +99,7 @@ void AddressBook::userMenu() {
     cout << "3. Search by last name." << endl;
     cout << "4. Show saved contacts." << endl;
     cout << "5. Delete contact." << endl;
-    cout << "6. Edit contact./FUTURE/" << endl;
+    cout << "6. Edit contact." << endl;
     cout << "7. Change password." << endl;
     cout << "8. Log out." << endl;
 }

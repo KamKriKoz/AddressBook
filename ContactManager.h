@@ -20,6 +20,7 @@ class ContactManager {
 
     Contact enterNewContactDetails();
     void showContactData(Contact person);
+    void editMenu();
 
 public:
 
@@ -32,6 +33,7 @@ public:
     void searchByName();
     void searchByLastName();
     void deleteContact();
+    void editContact();
 };
 
 #endif // CONTACTMANAGER_H

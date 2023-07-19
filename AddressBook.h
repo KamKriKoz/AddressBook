@@ -39,6 +39,7 @@ public:
     void searchByName();
     void searchByLastName();
     void deleteContact();
+    void editContact();
 };
 
 #endif // ADDRESSBOOK_H

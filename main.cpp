@@ -68,6 +68,10 @@ int main() {
                 addresBook.deleteContact();
                 break;
 
+            case '6':
+                addresBook.editContact();
+                break;
+
             case '7':
                 addresBook.passwordChange();
                 break;

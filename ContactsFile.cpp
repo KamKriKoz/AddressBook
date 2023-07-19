@@ -87,6 +87,47 @@ void ContactsFile::modifyContactsFileAfterDelete(int contactIdToDelete) {
     fileSwapAndDelete(temporaryFileName);
 }
 
+void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
+
+    string line, field, temporaryFileName = "temporaryContacts.txt";
+    bool flag = false;
+    ifstream file(CONTACTS_FILE_NAME, ios::in);
+    ofstream temporaryfile(temporaryFileName, ios::out);
+
+    while (getline(file, line)) {
+
+        istringstream iss(line);
+        getline(iss, field, '|');
+
+        if(stoi(field) != contactToEdit.getContactId()){
+
+            if(!flag) {
+                temporaryfile << line;
+                flag = true;
+            }
+            else {
+                temporaryfile << endl;
+                temporaryfile << line;
+            }
+        }
+        else {
+            if(!flag) {
+                temporaryfile << transformatingContactToFormat(contactToEdit);
+                flag = true;
+            }
+            else {
+                temporaryfile << endl;
+                temporaryfile << transformatingContactToFormat(contactToEdit);
+            }
+        }
+    }
+
+    file.close();
+    temporaryfile.close();
+
+    fileSwapAndDelete(temporaryFileName);
+}
+
 void ContactsFile::fileSwapAndDelete(string temporaryFileName) {
 
     if (std::remove(CONTACTS_FILE_NAME.c_str()) != 0) perror("Error removing file");

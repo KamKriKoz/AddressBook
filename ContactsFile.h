@@ -32,6 +32,7 @@ public:
     vector <Contact> loadContactsFromFile(int idLoggedUser);
     int getLastContactId();
     void modifyContactsFileAfterDelete(int contactIdToDelete);
+    void modifyContactsFileAfterEdit(Contact contactToEdit);
 };
 
 #endif // CONTACTSFILE_H
