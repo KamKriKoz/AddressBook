@@ -53,6 +53,34 @@ void ContactManager::searchByName() {
     system("pause");
 }
 
+void ContactManager::searchByLastName() {
+
+    system("cls");
+    bool flag = true;
+
+    if (contacts.empty()) {
+        cout << "There are no contacts yet" << endl;
+        system("pause");
+        return;
+    }
+
+    cout << "Enter last name: ";
+    string lastName = HelperMethods::loadLine();
+    cout << endl;
+
+    for (Contact person : contacts) {
+        if (person.getLastName() == lastName) {
+            showContactData(person);
+            flag = false;
+        }
+    }
+
+    if (flag)
+        cout << "There is no contact for the given last name." << endl;
+
+    system("pause");
+}
+
 Contact ContactManager::enterNewContactDetails() {
 
     system("cls");

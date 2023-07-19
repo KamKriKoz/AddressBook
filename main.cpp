@@ -56,6 +56,10 @@ int main() {
                 addresBook.searchByName();
                 break;
 
+            case '3':
+                addresBook.searchByLastName();
+                break;
+
             case '4':
                 addresBook.showAllContacts();
                 break;

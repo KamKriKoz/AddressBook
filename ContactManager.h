@@ -29,6 +29,7 @@ public:
     void addContact();
     void showAllContacts();
     void searchByName();
+    void searchByLastName();
 };
 
 #endif // CONTACTMANAGER_H
