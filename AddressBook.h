@@ -38,6 +38,7 @@ public:
     bool whetherUserIsLogged();
     void searchByName();
     void searchByLastName();
+    void deleteContact();
 };
 
 #endif // ADDRESSBOOK_H

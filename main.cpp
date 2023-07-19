@@ -64,6 +64,10 @@ int main() {
                 addresBook.showAllContacts();
                 break;
 
+            case '5':
+                addresBook.deleteContact();
+                break;
+
             case '7':
                 addresBook.passwordChange();
                 break;

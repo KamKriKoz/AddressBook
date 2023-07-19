@@ -81,6 +81,51 @@ void ContactManager::searchByLastName() {
     system("pause");
 }
 
+void ContactManager::deleteContact() {/////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+    system("cls");
+    Contact person;
+    int contactIdToDelete = 0;
+    char choose;
+
+    if (contacts.empty()) {
+        cout << "There are no contacts yet." << endl;
+        system ("pause");
+        return;
+    }
+
+    cout << "Enter contact id: ";
+    contactIdToDelete = HelperMethods::loadInteger();
+
+    for (vector <Contact> :: iterator itr = contacts.begin(); itr != contacts.end(); itr++) {
+
+        person = *itr;
+        if (person.getContactId() == contactIdToDelete) {
+
+            cout << "Press t, to confirm deletion or any other button to reject." << endl;
+            choose = getch();
+
+            switch (choose) {
+
+            case 't':
+                contacts.erase(itr);
+                contactsFile.modifyContactsFileAfterDelete(contactIdToDelete);
+                cout << "Contact has been deleted." << endl;
+                system("pause");
+                return;
+
+            default:
+                cout << "Deletion cancelled." << endl;
+                system("pause");
+                return;
+            }
+        }
+    }
+
+    cout << "There is no contact for the given id number." << endl;
+    system("pause");
+}
+
 Contact ContactManager::enterNewContactDetails() {
 
     system("cls");

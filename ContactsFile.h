@@ -21,6 +21,7 @@ class ContactsFile {
     Contact downloadOneContactData(string oneContactData);
     int getUserIdFromLine(string oneContactData);
     int getContactIdFromLine(string oneContactData);
+    void fileSwapAndDelete (string temporaryFileName);
 
 public:
 
@@ -30,6 +31,7 @@ public:
     bool addToContactsFile(Contact person);
     vector <Contact> loadContactsFromFile(int idLoggedUser);
     int getLastContactId();
+    void modifyContactsFileAfterDelete(int contactIdToDelete);
 };
 
 #endif // CONTACTSFILE_H
