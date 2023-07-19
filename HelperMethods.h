@@ -15,6 +15,7 @@ public:
     static int conversionToInt(string number);
     static string getNumber(string text, int position);
     static string loadLine();
+    static int loadInteger();
 };
 
 #endif // HELPERMETHODS_H

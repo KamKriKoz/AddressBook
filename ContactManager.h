@@ -6,6 +6,7 @@
 #include <windows.h>
 #include <fstream>
 #include <sstream>
+#include <conio.h>
 #include "Contact.h"
 #include "ContactsFile.h"
 
@@ -19,8 +20,7 @@ class ContactManager {
 
     Contact enterNewContactDetails();
     void showContactData(Contact person);
-
-
+    void editMenu();
 
 public:
 
@@ -30,6 +30,10 @@ public:
     };
     void addContact();
     void showAllContacts();
+    void searchByName();
+    void searchByLastName();
+    void deleteContact();
+    void editContact();
 };
 
 #endif // CONTACTMANAGER_H

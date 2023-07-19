@@ -40,3 +40,19 @@ string HelperMethods::loadLine() {
     getline(cin, input);
     return input;
 }
+
+int HelperMethods::loadInteger() {
+
+    string input = "";
+    int integer = 0;
+
+    while(1) {
+
+        getline(cin, input);
+        stringstream myStream(input);
+
+        if (myStream >> integer) break;
+        else cout << "This is not an integer. Enter again." << endl;
+    }
+    return integer;
+}

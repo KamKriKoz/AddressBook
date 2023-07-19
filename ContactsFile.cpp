@@ -11,10 +11,10 @@ bool ContactsFile::addToContactsFile(Contact person) {
     fstream file;
     file.open(CONTACTS_FILE_NAME.c_str(), ios::app);
 
-    if (file.good() == true) {
+    if (file.good()) {
         lineWithData = transformatingContactToFormat(person);
 
-        if (HelperMethods::whetherFileIsEmpty(file) == true) file << lineWithData;
+        if (HelperMethods::whetherFileIsEmpty(file)) file << lineWithData;
         else file << endl << lineWithData;
 
         lastContactId++;
@@ -36,7 +36,7 @@ vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
     fstream file;
     file.open(CONTACTS_FILE_NAME.c_str(), ios::in);
 
-    if (file.good() == true) {
+    if (file.good()) {
         while (getline(file, oneContactData)) {
 
             if(idLoggedUser == getUserIdFromLine(oneContactData)) {
@@ -52,6 +52,86 @@ vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
         file.close();
     }
     return contacts;
+}
+
+void ContactsFile::modifyContactsFileAfterDelete(int contactIdToDelete) {
+
+    string line, field, temporaryFileName = "temporaryContacts.txt";
+    bool flag = false;
+    ifstream file(CONTACTS_FILE_NAME, ios::in);
+    ofstream temporaryfile(temporaryFileName, ios::out);
+
+    while (getline(file, line)) {
+
+        istringstream iss(line);
+        getline(iss, field, '|');
+
+        if (stoi(field) != contactIdToDelete) {
+
+            if (!flag) {
+                temporaryfile << line;
+                lastContactId = stoi(field);
+                flag = true;
+            }
+            else {
+                temporaryfile << endl;
+                temporaryfile << line;
+                lastContactId = stoi(field);
+            }
+        }
+    }
+
+    file.close();
+    temporaryfile.close();
+
+    fileSwapAndDelete(temporaryFileName);
+}
+
+void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
+
+    string line, field, temporaryFileName = "temporaryContacts.txt";
+    bool flag = false;
+    ifstream file(CONTACTS_FILE_NAME, ios::in);
+    ofstream temporaryfile(temporaryFileName, ios::out);
+
+    while (getline(file, line)) {
+
+        istringstream iss(line);
+        getline(iss, field, '|');
+
+        if(stoi(field) != contactToEdit.getContactId()){
+
+            if(!flag) {
+                temporaryfile << line;
+                flag = true;
+            }
+            else {
+                temporaryfile << endl;
+                temporaryfile << line;
+            }
+        }
+        else {
+            if(!flag) {
+                temporaryfile << transformatingContactToFormat(contactToEdit);
+                flag = true;
+            }
+            else {
+                temporaryfile << endl;
+                temporaryfile << transformatingContactToFormat(contactToEdit);
+            }
+        }
+    }
+
+    file.close();
+    temporaryfile.close();
+
+    fileSwapAndDelete(temporaryFileName);
+}
+
+void ContactsFile::fileSwapAndDelete(string temporaryFileName) {
+
+    if (std::remove(CONTACTS_FILE_NAME.c_str()) != 0) perror("Error removing file");
+    if (rename(temporaryFileName.c_str(), CONTACTS_FILE_NAME.c_str()) != 0) perror("Error renaming file");
 }
 
 string ContactsFile::transformatingContactToFormat(Contact person) {
@@ -71,17 +151,12 @@ string ContactsFile::transformatingContactToFormat(Contact person) {
 int ContactsFile::getUserIdFromLine(string oneContactData) {
 
     int position = oneContactData.find_first_of('|') + 1;
-    int userId = HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, position));
-
-    return userId;
+    return HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, position));
 }
 
 int ContactsFile::getContactIdFromLine(string oneContactData) {
 
-    int position = 0;
-    int contactId = HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, position));
-
-    return contactId;
+    return HelperMethods::conversionToInt(HelperMethods::getNumber(oneContactData, 0));
 }
 
 Contact ContactsFile::downloadOneContactData(string oneContactData) {

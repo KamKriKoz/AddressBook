@@ -36,6 +36,10 @@ public:
     void loginMenu();
     void userMenu();
     bool whetherUserIsLogged();
+    void searchByName();
+    void searchByLastName();
+    void deleteContact();
+    void editContact();
 };
 
 #endif // ADDRESSBOOK_H
