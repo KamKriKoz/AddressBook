@@ -9,18 +9,18 @@ bool ContactsFile::addToContactsFile(Contact person) {
 
     string lineWithData;
     fstream file;
-    file.open(CONTACTS_FILE_NAME.c_str(), ios::app);
+    file.open(getFileName().c_str(), ios::app);
 
     if (file.good()) {
         lineWithData = transformatingContactToFormat(person);
 
-        if (HelperMethods::whetherFileIsEmpty(file)) file << lineWithData;
+        if (whetherFileIsEmpty()) file << lineWithData;
         else file << endl << lineWithData;
 
         lastContactId++;
         return true;
     } else {
-        cout << "File " << CONTACTS_FILE_NAME << " failed to open." << endl;
+        cout << "File " << getFileName() << " failed to open." << endl;
         return false;
     }
 
@@ -34,7 +34,7 @@ vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
     string oneContactData = "";
     string lastContactData = "";
     fstream file;
-    file.open(CONTACTS_FILE_NAME.c_str(), ios::in);
+    file.open(getFileName().c_str(), ios::in);
 
     if (file.good()) {
         while (getline(file, oneContactData)) {
@@ -48,7 +48,7 @@ vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
         }
     file.close();
     } else {
-        cout << endl << "File " << CONTACTS_FILE_NAME << " failed to open." << endl << endl;
+        cout << endl << "File " << getFileName() << " failed to open." << endl << endl;
         file.close();
     }
     return contacts;
@@ -58,7 +58,7 @@ void ContactsFile::modifyContactsFileAfterDelete(int contactIdToDelete) {
 
     string line, field, temporaryFileName = "temporaryContacts.txt";
     bool flag = false;
-    ifstream file(CONTACTS_FILE_NAME, ios::in);
+    ifstream file(getFileName(), ios::in);
     ofstream temporaryfile(temporaryFileName, ios::out);
 
     while (getline(file, line)) {
@@ -91,7 +91,7 @@ void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
 
     string line, field, temporaryFileName = "temporaryContacts.txt";
     bool flag = false;
-    ifstream file(CONTACTS_FILE_NAME, ios::in);
+    ifstream file(getFileName(), ios::in);
     ofstream temporaryfile(temporaryFileName, ios::out);
 
     while (getline(file, line)) {
@@ -130,8 +130,8 @@ void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
 
 void ContactsFile::fileSwapAndDelete(string temporaryFileName) {
 
-    if (std::remove(CONTACTS_FILE_NAME.c_str()) != 0) perror("Error removing file");
-    if (rename(temporaryFileName.c_str(), CONTACTS_FILE_NAME.c_str()) != 0) perror("Error renaming file");
+    if (std::remove(getFileName().c_str()) != 0) perror("Error removing file");
+    if (rename(temporaryFileName.c_str(), getFileName().c_str()) != 0) perror("Error renaming file");
 }
 
 string ContactsFile::transformatingContactToFormat(Contact person) {

@@ -19,6 +19,12 @@ void UserManager::userRegistration() {
 
 void UserManager::showUsers() {
 
+    if (users.empty()) {
+        cout << endl << "There are no users yet." << endl;
+        system("pause");
+        return;
+    }
+
     for (size_t i = 0; i < users.size(); i++) showSingleUser(i);
 
     cout << endl;

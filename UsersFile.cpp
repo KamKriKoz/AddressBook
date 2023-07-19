@@ -4,15 +4,15 @@ void UsersFile::addToUsersFile(User person) {
 
     string lineWithData;
     fstream file;
-    file.open(USERS_FILE_NAME.c_str(), ios::app);
+    file.open(getFileName().c_str(), ios::app);
 
     if (file.good()) {
         lineWithData = transformatingToFormat(person);
-        if (HelperMethods::whetherFileIsEmpty(file)) file << lineWithData;
+        if (whetherFileIsEmpty()) file << lineWithData;
         else file << endl << lineWithData;
         file.close();
     }
-    else cout << "File " << USERS_FILE_NAME << " failed to open." << endl;
+    else cout << "File " << getFileName() << " failed to open." << endl;
 }
 
 vector <User> UsersFile::loadUsersFromFile() {
@@ -21,7 +21,7 @@ vector <User> UsersFile::loadUsersFromFile() {
     vector <User> users;
     string oneUserData = "";
     fstream file;
-    file.open(USERS_FILE_NAME.c_str(), ios::in);
+    file.open(getFileName().c_str(), ios::in);
 
     if (file.good()) {
         while (getline(file, oneUserData)) {
@@ -36,7 +36,7 @@ vector <User> UsersFile::loadUsersFromFile() {
 void UsersFile::overwriteUsersFile(vector <User> &users) {
 
     ofstream file;
-    file.open(USERS_FILE_NAME);
+    file.open(getFileName());
 
     file << users[0].getId() << "|";
     file << users[0].getLogin() << "|";
@@ -48,7 +48,6 @@ void UsersFile::overwriteUsersFile(vector <User> &users) {
         file << users[i].getId() << "|";
         file << users[i].getLogin() << "|";
         file << users[i].getPassword() << "|";
-
     }
 
     file.close();

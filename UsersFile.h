@@ -8,18 +8,19 @@
 
 #include "User.h"
 #include "HelperMethods.h"
+#include "TextFile.h"
 
 
 using namespace std;
 
-class UsersFile {
+class UsersFile : public TextFile {
 
-    const string USERS_FILE_NAME;
     string transformatingToFormat(User person);
     User downloadOneUserData(string oneUserData);
 
 public:
-    UsersFile(string usersFileName) : USERS_FILE_NAME(usersFileName) {};
+
+    UsersFile(string fileName) : TextFile(fileName) {};
     void addToUsersFile(User person);
     vector <User> loadUsersFromFile();
     void overwriteUsersFile(vector <User> &users);

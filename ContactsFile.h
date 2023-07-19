@@ -8,13 +8,12 @@
 
 #include "Contact.h"
 #include "HelperMethods.h"
-
+#include "TextFile.h"
 
 using namespace std;
 
-class ContactsFile {
+class ContactsFile : public TextFile {
 
-    const string CONTACTS_FILE_NAME;
     int lastContactId;
 
     string transformatingContactToFormat(Contact person);
@@ -25,7 +24,7 @@ class ContactsFile {
 
 public:
 
-    ContactsFile(string contactsFileName) : CONTACTS_FILE_NAME(contactsFileName) {
+    ContactsFile(string fileName) : TextFile(fileName) {
         lastContactId = 0;
     };
     bool addToContactsFile(Contact person);

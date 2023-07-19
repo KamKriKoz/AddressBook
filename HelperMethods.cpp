@@ -8,13 +8,6 @@ string HelperMethods::conversionToString(int number) {
     return str;
 }
 
-bool HelperMethods::whetherFileIsEmpty(fstream &file) {
-
-    file.seekg(0, ios::end);
-    if(file.tellg() == 0) return true;
-    else return false;
-}
-
 int HelperMethods::conversionToInt(string number) {
 
     int numInt;

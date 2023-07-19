@@ -11,7 +11,6 @@ class HelperMethods {
 
 public:
     static string conversionToString(int number);
-    static bool whetherFileIsEmpty(fstream &file);
     static int conversionToInt(string number);
     static string getNumber(string text, int position);
     static string loadLine();
