@@ -56,9 +56,12 @@ void UsersFile::overwriteUsersFile(vector <User> &users) {
 string UsersFile::transformatingToFormat(User person) {
 
     string lineWithData = "";
-    lineWithData += HelperMethods::conversionToString(person.getId()) + '|';
-    lineWithData += person.getLogin() + '|';
-    lineWithData += person.getPassword() + '|';
+    lineWithData.append(HelperMethods::conversionToString(person.getId()));
+    lineWithData.push_back('|');
+    lineWithData.append(person.getLogin());
+    lineWithData.push_back('|');
+    lineWithData.append(person.getPassword());
+    lineWithData.push_back('|');
 
     return lineWithData;
 }

@@ -28,7 +28,7 @@ void ContactManager::showAllContacts() {
 void ContactManager::searchByName() {
 
     system("cls");
-    bool flag = true;
+    bool isContact = true;
 
     if (contacts.empty()) {
         cout << "There are no contacts yet" << endl;
@@ -43,11 +43,11 @@ void ContactManager::searchByName() {
     for (Contact person : contacts) {
         if (person.getName() == name) {
             showContactData(person);
-            flag = false;
+            isContact = false;
         }
     }
 
-    if (flag)
+    if (isContact)
         cout << "There is no contact for the given name." << endl;
 
     system("pause");
@@ -56,7 +56,7 @@ void ContactManager::searchByName() {
 void ContactManager::searchByLastName() {
 
     system("cls");
-    bool flag = true;
+    bool isContact = true;
 
     if (contacts.empty()) {
         cout << "There are no contacts yet" << endl;
@@ -71,11 +71,11 @@ void ContactManager::searchByLastName() {
     for (Contact person : contacts) {
         if (person.getLastName() == lastName) {
             showContactData(person);
-            flag = false;
+            isContact = false;
         }
     }
 
-    if (flag)
+    if (isContact)
         cout << "There is no contact for the given last name." << endl;
 
     system("pause");
@@ -84,7 +84,6 @@ void ContactManager::searchByLastName() {
 void ContactManager::deleteContact() {
 
     system("cls");
-    Contact person;
     int contactIdToDelete = 0;
     char choose;
 
@@ -99,8 +98,7 @@ void ContactManager::deleteContact() {
 
     for (vector <Contact> :: iterator itr = contacts.begin(); itr != contacts.end(); itr++) {
 
-        person = *itr;
-        if (person.getContactId() == contactIdToDelete) {
+        if (itr -> getContactId() == contactIdToDelete) {
 
             cout << "Press t, to confirm deletion or any other button to reject." << endl;
             choose = getch();
@@ -129,7 +127,6 @@ void ContactManager::deleteContact() {
 void ContactManager::editContact() {
 
     system("cls");
-    Contact person;
     int contactIdToEdit = 0;
     char choose;
 
@@ -144,8 +141,7 @@ void ContactManager::editContact() {
 
     for (vector <Contact> :: iterator itr = contacts.begin(); itr != contacts.end(); itr++) {
 
-        person = *itr;
-        if (person.getContactId() == contactIdToEdit) {
+        if (itr -> getContactId() == contactIdToEdit) {
 
             system("cls");
             editMenu();

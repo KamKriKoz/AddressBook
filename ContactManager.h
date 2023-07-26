@@ -25,7 +25,7 @@ class ContactManager {
 public:
 
     ContactManager(string contactsFileName, int idLoggedUser)
-        : contactsFile(contactsFileName), ID_LOGGED_USER(idLoggedUser) {
+        : ID_LOGGED_USER(idLoggedUser), contactsFile(contactsFileName) {
         contacts = contactsFile.loadContactsFromFile(ID_LOGGED_USER);
     };
     void addContact();

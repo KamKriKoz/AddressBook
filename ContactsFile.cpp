@@ -18,13 +18,13 @@ bool ContactsFile::addToContactsFile(Contact person) {
         else file << endl << lineWithData;
 
         lastContactId++;
+        file.close();
         return true;
     } else {
         cout << "File " << getFileName() << " failed to open." << endl;
+        file.close();
         return false;
     }
-
-    file.close();
 }
 
 vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
@@ -57,7 +57,7 @@ vector <Contact> ContactsFile::loadContactsFromFile(int idLoggedUser) {
 void ContactsFile::modifyContactsFileAfterDelete(int contactIdToDelete) {
 
     string line, field, temporaryFileName = "temporaryContacts.txt";
-    bool flag = false;
+    bool isFirstLine = false;
     ifstream file(getFileName(), ios::in);
     ofstream temporaryfile(temporaryFileName, ios::out);
 
@@ -68,10 +68,10 @@ void ContactsFile::modifyContactsFileAfterDelete(int contactIdToDelete) {
 
         if (stoi(field) != contactIdToDelete) {
 
-            if (!flag) {
+            if (!isFirstLine) {
                 temporaryfile << line;
                 lastContactId = stoi(field);
-                flag = true;
+                isFirstLine = true;
             }
             else {
                 temporaryfile << endl;
@@ -90,7 +90,7 @@ void ContactsFile::modifyContactsFileAfterDelete(int contactIdToDelete) {
 void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
 
     string line, field, temporaryFileName = "temporaryContacts.txt";
-    bool flag = false;
+    bool isFirstLine = false;
     ifstream file(getFileName(), ios::in);
     ofstream temporaryfile(temporaryFileName, ios::out);
 
@@ -101,9 +101,9 @@ void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
 
         if(stoi(field) != contactToEdit.getContactId()){
 
-            if(!flag) {
+            if(!isFirstLine) {
                 temporaryfile << line;
-                flag = true;
+                isFirstLine = true;
             }
             else {
                 temporaryfile << endl;
@@ -111,9 +111,9 @@ void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
             }
         }
         else {
-            if(!flag) {
+            if(!isFirstLine) {
                 temporaryfile << transformatingContactToFormat(contactToEdit);
-                flag = true;
+                isFirstLine = true;
             }
             else {
                 temporaryfile << endl;
@@ -130,20 +130,27 @@ void ContactsFile::modifyContactsFileAfterEdit(Contact contactToEdit) {
 
 void ContactsFile::fileSwapAndDelete(string temporaryFileName) {
 
-    if (std::remove(getFileName().c_str()) != 0) perror("Error removing file");
+    if (remove(getFileName().c_str()) != 0) perror("Error removing file");
     if (rename(temporaryFileName.c_str(), getFileName().c_str()) != 0) perror("Error renaming file");
 }
 
 string ContactsFile::transformatingContactToFormat(Contact person) {
 
     string lineWithData = "";
-    lineWithData += HelperMethods::conversionToString(person.getContactId()) + '|';
-    lineWithData += HelperMethods::conversionToString(person.getUserId()) + '|';
-    lineWithData += person.getName() + '|';
-    lineWithData += person.getLastName() + '|';
-    lineWithData += person.getTelNumber() + '|';
-    lineWithData += person.getEmail() + '|';
-    lineWithData += person.getAddress() + '|';
+    lineWithData.append(HelperMethods::conversionToString(person.getContactId()));
+    lineWithData.push_back('|');
+    lineWithData.append(HelperMethods::conversionToString(person.getUserId()));
+    lineWithData.push_back('|');
+    lineWithData.append(person.getName());
+    lineWithData.push_back('|');
+    lineWithData.append(person.getLastName());
+    lineWithData.push_back('|');
+    lineWithData.append(person.getTelNumber());
+    lineWithData.push_back('|');
+    lineWithData.append(person.getEmail());
+    lineWithData.push_back('|');
+    lineWithData.append(person.getAddress());
+    lineWithData.push_back('|');
 
     return lineWithData;
 }
